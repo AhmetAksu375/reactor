@@ -15,12 +15,11 @@ interface RegisterData extends Company {
 
 }
 
-
 export const login = async (data: Company) => {
   try {
-    const response = await apiClient.post('/api/Auth/login', data);
-    localStorage.setItem("token", response.data);
-
+    const response = await apiClient.post('/api/Auth/login-company', data);
+    localStorage.setItem("token", response.data.token);
+    
     // Redirect after 1 millisecond
     setTimeout(() => {
       window.location.href = '/dashboard'; // Replace '/dashboard' with the path you want to redirect to

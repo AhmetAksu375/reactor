@@ -7,7 +7,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
 
   const handleSubmit = async () => {
-      login({email, password})
+     await login({email, password})
   };
 
   return (

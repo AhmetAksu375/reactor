@@ -4,7 +4,9 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import Login from './pages/login';
 import Register from './pages/registerr';
 import Home from './pages/home'; // Make sure you have a Home component
+import Department from './pages/management/department/department';
 import {auth} from "../utils/auth"
+import Management from './pages/management/management';
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -21,6 +23,7 @@ const App = () => {
           <Route path="/login" element={isAuthenticated ? <Navigate to="/home" /> : <Login />} />
           <Route path="/register" element={isAuthenticated ? <Navigate to="/home" /> : <Register />} />
           <Route path="/home" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
+          <Route path="/management/*" element={<Management/>} />
           {/* Redirect unknown routes to login */}
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
