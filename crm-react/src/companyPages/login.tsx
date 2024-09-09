@@ -1,23 +1,23 @@
 // src/components/Login.tsx
 import { useState } from 'react';
-import { login } from '../api/Company/companyService';
+import { companyLogin } from '../api/Company/companyService';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
+  const [username, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = async () => {
-     await login({email, password})
+     await companyLogin({username, password});
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
+    <div className="flex flex-col items-center justify-center  ">
       <h1 className="text-2xl mb-4">Login</h1>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 w-6/12 ">
         <input
           type="text"
           placeholder="Username"
-          value={email}
+          value={username}
           onChange={(e) => setEmail(e.target.value)}
           className="p-2 border border-gray-300 rounded"
         />
