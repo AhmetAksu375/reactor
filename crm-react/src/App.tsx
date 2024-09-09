@@ -1,13 +1,19 @@
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 // src/App.js
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+=======
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import AdminRoot from './adminPages/adminRoot';
+>>>>>>> Stashed changes
 import Login from './pages/login';
 import Register from './pages/registerr';
-import Home from './pages/home'; // Make sure you have a Home component
+import Home from './pages/home';
 import Department from './pages/management/department/department';
-import {auth} from "../utils/auth"
 import Management from './pages/management/management';
+<<<<<<< Updated upstream
 =======
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -26,11 +32,15 @@ const App = () => {
     setIsAuthenticated(!!auth);
   }, []);
 
+=======
+
+const App = () => {
+>>>>>>> Stashed changes
   return (
     <Router>
       <div className="flex flex-col px-24 py-12">
-       
         <Routes>
+<<<<<<< Updated upstream
           <Route path="/ " element={isAuthenticated ? <Navigate to="/home" /> : <Login />} />
           <Route path="/admin" element={<AdminRoot></AdminRoot>} />
 
@@ -49,6 +59,10 @@ const App = () => {
           {/* Use wildcard '*' for nested routes */}
           <Route path="/admin/*" element={<AdminRoot />} />
           <Route path="/company/*" element={<CompanyRoot />} />
+>>>>>>> Stashed changes
+=======
+          <Route path="/admin/*" element={<AdminRoot />} />
+          {/* Define other routes here */}
 >>>>>>> Stashed changes
         </Routes>
       </div>
