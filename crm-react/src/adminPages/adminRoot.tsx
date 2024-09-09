@@ -1,5 +1,4 @@
 import React from 'react';
-<<<<<<< Updated upstream
 import { Routes, Route, Navigate } from 'react-router-dom';
 import AdminLogin from './auth/adminLogin';
 import AdminRegister from './auth/adminRegister';
@@ -40,24 +39,6 @@ const AdminRoot = () => {
           path="*"
           element={<Navigate to={isAuthenticated ? "/admin/panel" : "/admin/login"} />}
         />
-=======
-import { NavLink, Route, Routes } from 'react-router-dom';
-import AdminLogin from './auth/adminLogin';
-import AdminRegister from './auth/adminRegister';
-
-const AdminRoot = () => {
-  return (
-    <div>
-      <h2>Admin</h2>
-      <nav>
-        <NavLink to="login/admin">Login</NavLink>
-        <NavLink to="register/admin">Register</NavLink>
-      </nav>
-      <Routes>
-        <Route path="login/admin" element={<AdminLogin />} />
-        <Route path="register/admin" element={<AdminRegister />} />
-        {/* Redirect or additional routes can be added here */}
->>>>>>> Stashed changes
       </Routes>
     </div>
   );
