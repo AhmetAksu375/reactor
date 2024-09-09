@@ -1,7 +1,6 @@
 // src/App.js
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, NavLink } from 'react-router-dom';
-import {auth} from "../utils/auth"
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+// import {auth} from "../utils/auth"
 import CompanyRoot from './companyPages/companyRoot';
 import Home from './companyPages/home';
 const App = () => {

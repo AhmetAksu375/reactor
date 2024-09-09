@@ -12,39 +12,59 @@ import ListItemText from '@mui/material/ListItemText';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { auth, deleteToken } from '../../utils/auth';
 
 interface Props {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
   window?: () => Window;
 }
 
 const drawerWidth = 240;
-const navItems = ['Home', 'About', 'Contact'];
+const navItems = auth 
+  ? [
+      { key: 'company/dashboard', label: 'Dashboard' },  
+      { key: 'company/addUser', label: 'Add User' },
+      { key: 'logout', label: 'Logout' } // Logout item added
+    ]
+  : [ 
+      { key: 'company/login', label: 'Login' },
+      { key: 'company/register', label: 'Register' }
+    ];
 
 export default function DrawerAppBar(props: Props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const navigate = useNavigate();
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
   };
 
+  const handleLogout = () => {
+    deleteToken();
+    navigate('/login'); // or any path you want after logout
+  };
+
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
       <Typography variant="h6" sx={{ my: 2 }}>
-        MUI
+        REACTOR
       </Typography>
       <Divider />
       <List>
         {navItems.map((item) => (
-          <ListItem key={item} disablePadding>
-            <ListItemButton sx={{ textAlign: 'center' }}>
-              <ListItemText primary={item} />
-            </ListItemButton>
+          <ListItem key={item.key} disablePadding>
+            {item.key === 'logout' ? (
+              <ListItemButton onClick={handleLogout} sx={{ textAlign: 'center' }}>
+                <ListItemText primary={item.label} />
+              </ListItemButton>
+            ) : (
+              <ListItemButton sx={{ textAlign: 'center' }}>
+                <NavLink to={`/${item.key}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <ListItemText primary={item.label} />
+                </NavLink>
+              </ListItemButton>
+            )}
           </ListItem>
         ))}
       </List>
@@ -72,13 +92,23 @@ export default function DrawerAppBar(props: Props) {
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
           >
-            MUI
+            REACTOR
           </Typography>
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
             {navItems.map((item) => (
-              <Button key={item} sx={{ color: '#fff' }}>
-                {item}
-              </Button>
+              item.key === 'logout' ? (
+                <ListItemButton key={item.key} onClick={handleLogout} sx={{ textAlign: 'center', display: 'inline-block', color: 'inherit', textDecoration: 'none' }}>
+                  {item.label}
+                </ListItemButton>
+              ) : (
+                <NavLink 
+                  to={`/${item.key}`} 
+                  key={item.key} 
+                  style={{ margin: '0 10px', textDecoration: 'none', color: 'inherit' }}
+                >
+                  {item.label}
+                </NavLink>
+              )
             ))}
           </Box>
         </Toolbar>
@@ -103,7 +133,7 @@ export default function DrawerAppBar(props: Props) {
       <Box component="main" sx={{ p: 3 }}>
         <Toolbar />
         <Typography>
-          
+          {/* İçerik buraya gelecek */}
         </Typography>
       </Box>
     </Box>
