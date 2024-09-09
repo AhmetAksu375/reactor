@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, NavLink } from 'react-router-dom';
 import {auth} from "../utils/auth"
 import CompanyRoot from './companyPages/companyRoot';
-import Home from './companyPages/home';
+import AdminRoot from './adminPages/adminRoot';
 const App = () => {
   // const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -19,6 +19,7 @@ const App = () => {
           <Route path="/admin"  />
           <Route path="/company/*"  element={<CompanyRoot />}/>
           <Route path="/home" element={<Home/>}/>
+
         </Routes>
       </div>
     </Router>
