@@ -7,6 +7,7 @@ import Home from './pages/home'; // Make sure you have a Home component
 import Department from './pages/management/department/department';
 import {auth} from "../utils/auth"
 import Management from './pages/management/management';
+import AdminRoot from './adminPages/adminRoot';
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -20,7 +21,9 @@ const App = () => {
       <div className="flex flex-col px-24 py-12">
        
         <Routes>
-          <Route path="/login" element={isAuthenticated ? <Navigate to="/home" /> : <Login />} />
+          <Route path="/ " element={isAuthenticated ? <Navigate to="/home" /> : <Login />} />
+          <Route path="/admin" element={<AdminRoot></AdminRoot>} />
+
           <Route path="/register" element={isAuthenticated ? <Navigate to="/home" /> : <Register />} />
           <Route path="/home" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
           <Route path="/management/*" element={<Management/>} />
