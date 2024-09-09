@@ -15,7 +15,7 @@ const App = () => {
     <Router>
       <div className="flex flex-col px-24 py-12">
         <Routes>
-          <Route path="/admin"  />
+          <Route path="/admin/*" element={<AdminRoot></AdminRoot>}/>
           <Route path="/company/*"  element={<CompanyRoot />}/>
           {/* <Route path="/home" element={<Home/>}/> */}
 

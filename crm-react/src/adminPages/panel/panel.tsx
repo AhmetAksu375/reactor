@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 
 export default function Panel() { // Component name should start with an uppercase letter
   const [departments, setDepartments] = useState(["Elektronik Destek", "Yazılım Destek", "Proje Destek"]);
-    
+    const [colors, setColors] = useState(["bg-blue-500", "bg-red-500", "bg-green-500"]);
   return (
     <div className='grid grid-cols-3'>
       {departments.map((department, index) => (
-        <div key={index} className='bg-blue-500 text-center text-2xl font-semibold text-slate-50 p-4 m-4 rounded-md'>
+        <div key={index} className='bg-blue-500 text-center rounded-2xl shadow-lg h-96 text-2xl hover:bg-red-500 duration-[1.3s] transition hover:rotate-[360deg]  font-semibold text-slate-50 p-4 m-4 rounded-md'>
           <h1>{department}</h1>
         </div>
       ))}

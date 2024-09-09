@@ -20,13 +20,11 @@ export const loginAdmin = async (data: Admin) => {
     const response = await apiClient.post('/api/admin/login', data);
     localStorage.setItem("token", response.data.token);
     
-    // Redirect after 1 millisecond
-    // setTimeout(() => {
-    //   window.location.href = '/admin/panel'; // Replace '/dashboard' with the path you want to redirect to
-    // }, 1);
+    setTimeout(() => {
+       window.location.href = '/admin/panel'; // Replace '/dashboard' with the path you want to redirect to
+    }, 1);
     toast.success('Login successful');
 
-    console.log(response.data.data.token);
 
     return response.data.data.token;
 
