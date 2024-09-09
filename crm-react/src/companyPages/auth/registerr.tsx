@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { registerMethod } from '../api/Company/companyService';
+import { companyRegister } from '../../api/Company/companyService';
 
 export default function Registerr() {
 const [id,setId] = useState(1);
@@ -11,7 +11,7 @@ const [id,setId] = useState(1);
 
   const handleLogin = async ()=>{
 
-    await registerMethod({id,name,email,password})
+    await companyRegister({id,name,email,password})
     
   }
   return (

@@ -1,34 +1,25 @@
 // src/App.js
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import Login from './pages/login';
-import Register from './pages/registerr';
-import Home from './pages/home'; // Make sure you have a Home component
-import Department from './pages/management/department/department';
+import { BrowserRouter as Router, Route, Routes, NavLink } from 'react-router-dom';
 import {auth} from "../utils/auth"
-import Management from './pages/management/management';
+import CompanyRoot from './companyPages/companyRoot';
 import AdminRoot from './adminPages/adminRoot';
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  useEffect(() => {
-    // Check authentication status when the component mounts
-    setIsAuthenticated(!!auth);
-  }, []);
+  // useEffect(() => {
+  //   // Check authentication status when the component mounts
+  //   setIsAuthenticated(!!auth);
+  // }, []);
 
   return (
     <Router>
       <div className="flex flex-col px-24 py-12">
-       
         <Routes>
-          <Route path="/ " element={isAuthenticated ? <Navigate to="/home" /> : <Login />} />
-          <Route path="/admin" element={<AdminRoot></AdminRoot>} />
+          <Route path="/admin"  />
+          <Route path="/company/*"  element={<CompanyRoot />}/>
+          <Route path="/home" element={<Home/>}/>
 
-          <Route path="/register" element={isAuthenticated ? <Navigate to="/home" /> : <Register />} />
-          <Route path="/home" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
-          <Route path="/management/*" element={<Management/>} />
-          {/* Redirect unknown routes to login */}
-          <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       </div>
     </Router>
@@ -36,3 +27,4 @@ const App = () => {
 };
 
 export default App;
+
