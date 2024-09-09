@@ -7,7 +7,7 @@ interface Company {
   password: string;
 }
 
-interface RegisterData extends Company {
+interface CompanyRegisterData extends Company {
   id:number;
   name: string;
   email:string;
@@ -15,7 +15,7 @@ interface RegisterData extends Company {
 
 }
 
-export const login = async (data: Company) => {
+export const companyLogin = async (data: Company) => {
   try {
     const response = await apiClient.post('/api/Auth/login-company', data);
     localStorage.setItem("token", response.data.token);
@@ -32,7 +32,7 @@ export const login = async (data: Company) => {
 };
 
 // Register method
-export const registerMethod = async (data: RegisterData) => {
+export const companyRegister = async (data: CompanyRegisterData) => {
   try {
     const response = await apiClient.post('/api/Company', data);
     return response.data;

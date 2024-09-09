@@ -1,13 +1,13 @@
 // src/components/Login.tsx
 import { useState } from 'react';
-import { login } from '../api/Company/companyService';
+// import { login } from '../../api/Company/companyService';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = async () => {
-     await login({email, password})
+    //  await login({email, password})
   };
 
   return (

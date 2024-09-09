@@ -1,7 +1,7 @@
 // src/pages/management/Management.jsx
 import { Routes, Route, Link } from 'react-router-dom';
 import Department from './department/department';
-
+import Bills from './bills/bills';
 
 const Management = () => {
   return (
@@ -10,11 +10,12 @@ const Management = () => {
       <nav>
         <ul>
           <li><Link to="Department">deparments</Link></li>
- 
+          <li><Link to="Bills">Bills</Link></li>
+    
         </ul>
       </nav>
       <Routes>
-        <Route path="Department" element={<Department />} />
+        <Route path="Bills" element={<Bills />} />
 
       </Routes>
     </div>
