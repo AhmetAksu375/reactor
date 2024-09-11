@@ -1,9 +1,14 @@
-import React from 'react'
-import { decodeToken } from '@/utils/jwtHelper'
-export default function management() {
-  
-  console.log(decodeToken())
+// src/components/Management.tsx
+import React, { useEffect } from 'react';
+
+
+const Management: React.FC = () => {
+
   return (
-    <div className='pt-10'>management</div>
-  )
-}
+    <div className='pt-10'>
+      <h2>Managemeasdant</h2>
+    </div>
+  );
+};
+
+export default Management;

@@ -18,9 +18,12 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
+// import MailIcon from '@mui/icons-material/Mail';
 import { useNavigate } from 'react-router-dom'; // useNavigate import ediliyor
-import DrawerAppBar from '@/companyPages/home';
+// import DrawerAppBar from '@/companyPages/home';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
+import { deleteToken } from '@/utils/auth';
 
 const drawerWidth = 240;
 
@@ -123,6 +126,8 @@ export default function Sidebar() {
     navigate(path); // '/company/adduser' yoluna yönlendirme yapılır
   };
 
+  const { unique_name } = useSelector((state: RootState) => state.user);
+
   return (
     <Box sx={{ display: 'flex' }}>
       {/* <DrawerAppBar key={} /> */}
@@ -144,7 +149,7 @@ export default function Sidebar() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Mini variant drawer
+            {unique_name}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -242,6 +247,54 @@ export default function Sidebar() {
               </ListItemIcon>
               <ListItemText
                 primary="User Transections" // Menüde görünen metin
+                sx={[
+                  open
+                    ? {
+                        opacity: 1,
+                      }
+                    : {
+                        opacity: 0,
+                      },
+                ]}
+              />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding sx={{ display: 'block' }}>
+            <ListItemButton
+              onClick={deleteToken} // onClick ile yönlendirme fonksiyonunu çağırıyoruz
+              sx={[
+                {
+                  minHeight: 48,
+                  px: 2.5,
+                },
+                open
+                  ? {
+                      justifyContent: 'initial',
+                    }
+                  : {
+                      justifyContent: 'center',
+                    },
+              ]}
+            >
+              <ListItemIcon
+                sx={[
+                  {
+                    minWidth: 0,
+                    justifyContent: 'center',
+                  },
+                  open
+                    ? {
+                        mr: 3,
+                      }
+                    : {
+                        mr: 'auto',
+                      },
+                ]}
+              >
+                <InboxIcon /> {/* Bu ikonu ihtiyaçlarınıza göre değiştirebilirsiniz */}
+              </ListItemIcon>
+              <ListItemText
+                primary="Logout" // Menüde görünen metin
                 sx={[
                   open
                     ? {

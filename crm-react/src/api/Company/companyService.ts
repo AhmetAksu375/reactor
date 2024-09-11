@@ -1,4 +1,3 @@
-// src/api/authService.ts
 import apiClient from '../apiClient';
 import { toast } from 'react-toastify'; // Import the 'toast' module from the appropriate library
 
@@ -14,16 +13,17 @@ interface CompanyRegisterData extends Company {
   password:string;
 }
 
-interface Subuser {
-  username : string;
-  email : string;
-  password : string;
-  companyId : number;
-}
+// interface Subuser {
+//   username : string;
+//   email : string;
+//   password : string;
+//   companyId : number;
+// }
 interface createSubUser {
-  username : string;
+  name : string;
   email : string;
   password : string;
+  departmantId : number;
   companyId : number;
 }
 
@@ -36,7 +36,7 @@ export const companyLogin = async (data: Company) => {
     toast.success('Login successful');
     // Redirect after 1 millisecond
     setTimeout(() => {
-      window.location.href = '/company'; // Replace '/dashboard' with the path you want to redirect to
+      window.location.href = '/'; // Replace '/dashboard' with the path you want to redirect to
     }, 1);
 
     return response.data.token;
@@ -58,18 +58,9 @@ export const companyRegister = async (data: CompanyRegisterData) => {
 };
 
 
-export const cerateSubUser = async (data:Subuser) => {
-  try {
-    const response = await apiClient.post('/api/Company/create-subuser', data);
-    return response.data;
-  } catch (error) {
-    console.error(error);
-  }
-}
-
 export const createSubUser = async (data:createSubUser)=>{
   try {
-    const response = await apiClient.post('/api/admin/create-subuser', data);
+    const response = await apiClient.post('/api/Employee', data);
     toast.success('User created successfully');
     return response.data;
   } catch (error) {
@@ -77,3 +68,19 @@ export const createSubUser = async (data:createSubUser)=>{
     throw new Error(`User creation failed: ${error}`);
   }
 }
+
+export const getSubUsers = async () => {
+  try {
+    const response = await apiClient.get('/api/Employee');
+    toast.success('User list fetched successfully',{position: "bottom-right", autoClose: 500});
+    console.log(response.data);
+    return response.data;
+  } catch (error: any) {
+    if (error.response && error.response.status === 401) {
+      toast.error('Unauthorized: Please log in again.');
+    } else {
+      toast.error('User list fetch failed');
+    }
+    throw new Error(`User list fetch failed: ${error}`);
+  }
+};

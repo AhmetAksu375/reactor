@@ -1,13 +1,47 @@
-// src/components/Login.tsx
 import { useState } from 'react';
 import { companyLogin } from '../api/Company/companyService';
+import { useDispatch } from 'react-redux';
+import { decodeToken } from '@/utils/jwtHelper';
+import { setUser } from '@/store/userSlice';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const dispatch = useDispatch();
 
   const handleSubmit = async () => {
-     await companyLogin({email, password});
+    try {
+      // Giriş işlemini gerçekleştir
+      await companyLogin({ email, password });
+
+      // LocalStorage'dan token'ı al
+      const token = localStorage.getItem('token');
+
+      if (token) {
+        // Token'ı decode et ve bilgileri al
+        const decoded = decodeToken(token);
+
+        // Decode edilen bilgileri Redux store'a kaydet
+        if (decoded) {
+          dispatch(setUser({
+            aud: decoded.aud,
+            email: decoded.email,
+            exp: decoded.exp,
+            iat: decoded.iat,
+            iss: decoded.iss,
+            nameid: decoded.nameid,
+            nbf: decoded.nbf,
+            unique_name: decoded.unique_name,
+          }));
+        } else {
+          console.error('Decode edilen token null döndü');
+        }
+      } else {
+        console.error('Token localStorage\'da bulunamadı');
+      }
+    } catch (error) {
+      console.error('Login işlemi sırasında hata oluştu:', error);
+    }
   };
 
   return (

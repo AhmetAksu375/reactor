@@ -22,11 +22,11 @@ const CompanyRoot = () => {
      <Sidebar />
     </div>
       <Routes>
-        <Route path="/" element={auth === null ? <Login /> :<Management/>} />
-        <Route path="/Login" element={auth === null ?  <Login /> :<Management /> } />
-        <Route path="/register" element={auth === null ? <Registerr /> :<Management/>  } />
+        <Route path="/" element={auth === null ? <Login /> : <Management/>} />
+        <Route path="/Login" element={auth === null ?  <Login /> : <Management /> } />
+        <Route path="/register" element={auth === null ? <Registerr /> : <Management/>  } />
         <Route path="/addUser" element={auth === null ? <Login/> : <AddUser />} /> 
-        <Route path="/usertransections" element={auth === null ? <Login/> :<UserTransections/> } /> 
+        <Route path="/usertransections" element={auth === null ? <Login/> : <UserTransections/> } /> 
         {/* <Route path='Management' element={<Management />} /> */}
 
       </Routes>

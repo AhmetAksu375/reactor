@@ -2,7 +2,8 @@ import * as React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-
+import AddUser from '../addUser';
+import EmployeeList from '../employeeList';
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -35,7 +36,7 @@ function a11yProps(index: number) {
 export default function ScrollableTabsWithContent() {
   const [value, setValue] = React.useState(0);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
@@ -60,10 +61,10 @@ export default function ScrollableTabsWithContent() {
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        Content for Item One
+       <EmployeeList/>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        Content for Item Two
+        <AddUser/>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         Content for Item Three

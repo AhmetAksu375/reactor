@@ -15,6 +15,19 @@ interface RegisterData extends Admin {
 
 }
 
+interface CreateDepartmant {
+  name: string;
+}
+
+interface PutDepartmant {
+  id: number;
+  name: string;
+}
+
+interface DeleteDepartmant {
+  id: number;
+}
+
 export const loginAdmin = async (data: Admin) => {
   try {
     const response = await apiClient.post('/api/admin/login', data);
@@ -48,3 +61,50 @@ export const registerAdmin = async (data: RegisterData) => {
     throw new Error(`Registration failed: ${error}`);
   }
 };
+
+export const createDepartment = async (data: CreateDepartmant) => {
+  try {
+    const response = await apiClient.post('/api/departmant', data);
+    toast.success('Department created');
+    return response.data;
+  } catch (error) {
+    toast.error('Department creation failed');
+    throw new Error(`Department creation failed: ${error}`);
+  }
+};
+
+
+//DEPARTMENTS
+export const getDepartments = async () => {
+  try {
+    const response = await apiClient.get('/api/departmant');
+    return response.data;
+  } catch (error) {
+    throw new Error(`Department fetch failed: ${error}`);
+  }
+}
+
+export const putDepartment = async (data: PutDepartmant) => {
+  try {
+    const response = await apiClient.put(`/api/departmant/${data.id}`, data);
+    toast.success('Department updated');
+    return response.data;
+  } catch (error) {
+    toast.error('Department update failed');
+    throw new Error(`Department update failed: ${error}`);
+  }
+}
+
+export const removeDepartment = async (data: DeleteDepartmant) => {
+  try {
+    const response = await apiClient.delete(`/api/departmant/${data.id}`);
+    toast.success('Department removed');
+    return response.data;
+  } catch (error) {
+    toast.error('Department remove failed');
+    throw new Error(`Department remove failed: ${error}`);
+  }
+}
+
+//EMPLOYEES
+

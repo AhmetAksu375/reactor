@@ -4,6 +4,9 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import CompanyRoot from './companyPages/companyRoot';
 import AdminRoot from './adminPages/adminRoot';
 import ExampleComponent from './compenents/ExampleComponent';
+import { store, persistor } from './store/store';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -16,7 +19,8 @@ const App = () => {
   // }, []);
 
   return (
-    
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
     <Router>
         <ToastContainer />
       <div className="flex flex-col px-24 py-12">
@@ -29,6 +33,8 @@ const App = () => {
         </Routes>
       </div>
     </Router>
+    </PersistGate>
+    </Provider>
   );
 };
 

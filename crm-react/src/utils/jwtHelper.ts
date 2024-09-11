@@ -1,16 +1,24 @@
 // src/utils/jwtHelper.ts
-import { jwtDecode } from 'jwt-decode';
-import { auth } from './auth';
-export const decodeToken = () => {
-    const token = auth ?? "";
-    try {
-        // Token'ı decode ediyoruz
-        const decoded = jwtDecode(token);
+import {jwtDecode} from 'jwt-decode';
 
-        // Çözülen bilgileri döndür
-        return decoded; // Örneğin { username: 'user1', role: 'admin', exp: 1672531199 }
-    } catch (error: any) {
-        console.error('Token decode edilemedi:', error.message);
-        return null;
-    }
+interface DecodedToken {
+  aud: string;
+  email: string;
+  exp: number;
+  iat: number;
+  iss: string;
+  nameid: string;
+  nbf: number;
+  unique_name: string;
+}
+
+export const decodeToken = (token: string): DecodedToken | null => {
+  try {
+    const decoded = jwtDecode<DecodedToken>(token);
+    console.log('Decoded Token:', decoded); // Debugging için çıktıyı kontrol edin
+    return decoded;
+  } catch (error) {
+    console.error('Token decode edilemedi:', error);
+    return null;
+  }
 };
