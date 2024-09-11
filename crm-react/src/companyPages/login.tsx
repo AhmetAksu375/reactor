@@ -3,11 +3,11 @@ import { useState } from 'react';
 import { companyLogin } from '../api/Company/companyService';
 
 const Login = () => {
-  const [username, setEmail] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = async () => {
-     await companyLogin({username, password});
+     await companyLogin({email, password});
   };
 
   return (
@@ -17,7 +17,7 @@ const Login = () => {
         <input
           type="text"
           placeholder="Username"
-          value={username}
+          value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="p-2 border border-gray-300 rounded"
         />

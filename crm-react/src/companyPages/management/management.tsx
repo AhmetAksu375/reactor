@@ -1,23 +1,9 @@
-// src/pages/management/Management.jsx
-import { Routes, Route, Link } from 'react-router-dom';
-
-const Management = () => {
+import React from 'react'
+import { decodeToken } from '@/utils/jwtHelper'
+export default function management() {
+  
+  console.log(decodeToken())
   return (
-    <div>
-      <h1>Yönetim Paneli</h1>
-      <nav>
-        <ul>
-          <li><Link to="Department">deparments</Link></li>
-     
-    
-        </ul>
-      </nav>
-      <Routes>
-     
-
-      </Routes>
-    </div>
-  );
-};
-
-export default Management;
+    <div className='pt-10'>management</div>
+  )
+}

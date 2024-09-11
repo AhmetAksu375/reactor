@@ -4,7 +4,7 @@ import AdminLogin from './auth/adminLogin';
 import AdminRegister from './auth/adminRegister';
 import Navbar from './Navbar';
 import Panel from './panel/panel';
-import { auth } from '../../utils/auth'; // Assuming auth is a function
+import { auth } from '../utils/auth'; // Assuming auth is a function
 
 const AdminRoot = () => {
   // Check if the user is authenticated

@@ -18,7 +18,7 @@ interface RegisterData extends Admin {
 export const loginAdmin = async (data: Admin) => {
   try {
     const response = await apiClient.post('/api/admin/login', data);
-    localStorage.setItem("token", response.data.token);
+    localStorage.setItem("token", response.data.data.token);
     
     setTimeout(() => {
        window.location.href = '/admin/panel'; // Replace '/dashboard' with the path you want to redirect to
