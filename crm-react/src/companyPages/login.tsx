@@ -47,7 +47,7 @@ const Login = () => {
   return (
     <div className="flex flex-col items-center justify-center   ">
       <div className=' m-auto flex-col items-center justify-center w-6/12 flex'>
-      <h1 className="text-2xl mb-4">Login</h1>
+      <h1 className="text-2xl mb-4">Login Company</h1>
       <div className="flex flex-col gap-4 w-6/12 ">
         <input
           type="text"

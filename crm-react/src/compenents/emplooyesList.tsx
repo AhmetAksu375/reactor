@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react"
-import { Toast } from "@radix-ui/react-toast"
+
 import * as React from "react"
 import {
   ColumnDef,
@@ -38,7 +38,6 @@ import {
 } from "@/components/ui/table"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { getSubUsers, deleteSubUser, updateSubUser } from "@/api/Company/companyService";
-import { toast } from "react-toastify"
 
 export type Employee = {
   id: number;

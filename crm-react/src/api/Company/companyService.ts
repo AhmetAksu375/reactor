@@ -13,19 +13,14 @@ interface CompanyRegisterData extends Company {
   password:string;
 }
 
-// interface Subuser {
-//   username : string;
-//   email : string;
-//   password : string;
-//   companyId : number;
-// }
 interface createSubUser {
   name : string;
   email : string;
   password : string;
   departmantId : number;
-  companyId : number;
+  
 }
+  
 
 interface deleteSubUser {
   id : number;
@@ -42,13 +37,10 @@ interface updateSubUser {
 export const companyLogin = async (data: Company) => {
   try {
     const response = await apiClient.post('/api/login/company', data);
-    localStorage.setItem("token", response.data.token);
-    console.log(response.data);
-    
+    localStorage.setItem("token", response.data.token);  
     toast.success('Login successful');
-    // Redirect after 1 millisecond
     setTimeout(() => {
-      window.location.href = '/'; // Replace '/dashboard' with the path you want to redirect to
+      window.location.href = '/company';
     }, 1);
 
     return response.data.token;
@@ -85,7 +77,6 @@ export const getSubUsers = async () => {
   try {
     const response = await apiClient.get('/api/Employee');
     toast.success('User list fetched successfully',{position: "bottom-right", autoClose: 500});
-    console.log(response.data);
     return response.data;
   } catch (error: any) {
     if (error.response && error.response.status === 401) {

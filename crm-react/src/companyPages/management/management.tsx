@@ -1,14 +1,7 @@
-// src/components/Management.tsx
-import React, { useEffect } from 'react';
 
 
-const Management: React.FC = () => {
-
+export default function management() {
   return (
-    <div className='pt-10'>
-      <h2>Managemeasdant</h2>
-    </div>
-  );
-};
-
-export default Management;
+    <div>management</div>
+  )
+}

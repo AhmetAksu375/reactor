@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSelector } from 'react-redux';
+//import { useSelector } from 'react-redux';
 import { createSubUser } from "@/api/Company/companyService";
 import { getDepartmant } from "@/api/Common/commonServices";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RootState } from '@/store/store';
+//import { RootState } from '@/store/store';
 
 interface Department {
   id: number;
@@ -19,9 +19,9 @@ interface Department {
 }
 
 export default function AddUser() {
-  const store = useSelector((state: RootState) => state.user);
-  const company = store.nameid;
-  const companyId = Number(company);
+  //const store = useSelector((state: RootState) => state.user);
+  //const company = store.nameid;
+  // const companyId = Number(company);
 
   const [name, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -49,7 +49,7 @@ export default function AddUser() {
       return;
     }
     const departmantId = Number(selectedDepartment); // Convert selected department ID to number if needed
-    await createSubUser({ name, email, password, departmantId, companyId });
+    await createSubUser({ name, email, password, departmantId });
   };
 
   return (
