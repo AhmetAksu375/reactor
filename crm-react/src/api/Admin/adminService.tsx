@@ -4,7 +4,7 @@ import { toast } from 'react-toastify'; // Import the 'toast' module from the ap
 
 // Define the type for login and register data
 interface Admin {
-  username: string;
+  email: string;
   password: string;
 }
 
@@ -30,20 +30,21 @@ interface DeleteDepartmant {
 
 export const loginAdmin = async (data: Admin) => {
   try {
-    const response = await apiClient.post('/api/admin/login', data);
-    localStorage.setItem("token", response.data.data.token);
-    
+    const response = await apiClient.post('/api/login/admin', data);
+    localStorage.setItem("token", response.data.token);
+    toast.success('Login successful');
+
     setTimeout(() => {
        window.location.href = '/admin/panel'; // Replace '/dashboard' with the path you want to redirect to
     }, 1);
-    toast.success('Login successful');
 
 
-    return response.data.data.token;
+    return response.data.token;
 
   } catch (error) {
+    toast.error('Login failed',{position: "bottom-right"});
     throw new Error(`Login failed: ${error}`);
-    toast.success('Login failed');
+    
 
   }
 };

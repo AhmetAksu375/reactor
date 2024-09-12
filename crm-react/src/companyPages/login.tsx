@@ -45,7 +45,8 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center  ">
+    <div className="flex flex-col items-center justify-center   ">
+      <div className=' m-auto flex-col items-center justify-center w-6/12 flex'>
       <h1 className="text-2xl mb-4">Login</h1>
       <div className="flex flex-col gap-4 w-6/12 ">
         <input
@@ -65,6 +66,7 @@ const Login = () => {
         <button onClick={handleSubmit} type="submit" className="bg-blue-500 text-white p-2 rounded">
           Login
         </button>
+      </div>
       </div>
     </div>
   );

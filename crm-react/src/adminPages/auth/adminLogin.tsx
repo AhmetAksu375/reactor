@@ -3,22 +3,22 @@ import { useState } from 'react';
 import { loginAdmin } from '../../api/Admin/adminService';
 
 const adminLogin = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = async () => {
-     await loginAdmin({username, password})
+     await loginAdmin({email, password})
   };
 
   return (
     <div className="flex flex-col items-center h-screen">
-      <h1 className="text-2xl mb-4">Login Admin</h1>
+      <h1 className="text-2xl mb-4 ">Login Admin</h1>
       <div className="flex flex-col gap-4 w-[400px]">
         <input
           type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="p-2 border border-gray-300 rounded"
         />
         <input

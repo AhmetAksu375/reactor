@@ -12,7 +12,7 @@ const AdminRoot = () => {
 
   return (
     <div>
-      <h2>Admin Portal</h2>
+      
       <Navbar />
 
       <Routes>

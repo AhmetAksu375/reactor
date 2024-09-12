@@ -27,6 +27,18 @@ interface createSubUser {
   companyId : number;
 }
 
+interface deleteSubUser {
+  id : number;
+}
+interface updateSubUser {
+  id : number;
+  name : string;
+  email : string;
+  password : string;
+  departmantId : number;
+  companyId : number;
+}
+
 export const companyLogin = async (data: Company) => {
   try {
     const response = await apiClient.post('/api/login/company', data);
@@ -82,5 +94,27 @@ export const getSubUsers = async () => {
       toast.error('User list fetch failed');
     }
     throw new Error(`User list fetch failed: ${error}`);
+  }
+};
+
+export const deleteSubUser = async (data: deleteSubUser) => {
+  try {
+    const response = await apiClient.delete(`/api/Employee/${data.id}`);
+    toast.success('User deleted successfully');
+    return response.data;
+  } catch (error) {
+    toast.error('User deletion failed');
+    throw new Error(`User deletion failed: ${error}`);
+  }
+}
+
+export const updateSubUser = async (data: updateSubUser) => {
+  try {
+    const response = await apiClient.put(`/api/Employee/${data.id}`, data);
+    toast.success('User updated successfully',{position: "bottom-right", autoClose: 500});
+    return response.data;
+  } catch (error) {
+    toast.error('User update failed');
+    throw new Error(`User update failed: ${error}`);
   }
 };

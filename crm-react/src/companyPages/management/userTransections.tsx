@@ -3,7 +3,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import AddUser from '../addUser';
-import EmployeeList from '../employeeList';
+import EmployoesList from '@/compenents/emplooyesList';
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -41,7 +41,7 @@ export default function ScrollableTabsWithContent() {
   };
 
   return (
-    <div className='w-screen'>
+    <div className='w-screen pl-16'>
     <Box sx={{ width: '100%' , marginTop:'20px'}}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs
@@ -53,33 +53,13 @@ export default function ScrollableTabsWithContent() {
         >
           <Tab label="User List" {...a11yProps(0)} />
           <Tab label="Add User" {...a11yProps(1)} />
-          <Tab label="Item Three" {...a11yProps(2)} />
-          <Tab label="Item Four" {...a11yProps(3)} />
-          <Tab label="Item Five" {...a11yProps(4)} />
-          <Tab label="Item Six" {...a11yProps(5)} />
-          <Tab label="Item Seven" {...a11yProps(6)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-       <EmployeeList/>
+      <EmployoesList/>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <AddUser/>
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={2}>
-        Content for Item Three
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={3}>
-        Content for Item Four
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={4}>
-        Content for Item Five
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={5}>
-        Content for Item Six
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={6}>
-        Content for Item Seven
       </CustomTabPanel>
     </Box>
     </div>
