@@ -1,14 +1,51 @@
 // src/components/Login.tsx
 import { useState } from 'react';
 import { loginAdmin } from '../../api/Admin/adminService';
+import { decodeToken } from '@/utils/jwtHelper';
+import { useDispatch } from 'react-redux';
+import { setUser } from '@/store/userSlice';
 
-const adminLogin = () => {
+
+const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const dispatch = useDispatch();
   const handleSubmit = async () => {
-     await loginAdmin({email, password})
+
+    try {
+      // Giriş işlemini gerçekleştir
+      await loginAdmin({ email, password });
+
+      // LocalStorage'dan token'ı al
+      const token = localStorage.getItem('token');
+
+      if (token) {
+        // Token'ı decode et ve bilgileri al
+        const decoded = decodeToken(token);
+
+        // Decode edilen bilgileri Redux store'a kaydet
+        if (decoded) {
+          dispatch(setUser({
+            aud: decoded.aud,
+            email: decoded.email,
+            exp: decoded.exp,
+            iat: decoded.iat,
+            iss: decoded.iss,
+            id: decoded.nameid,
+            nbf: decoded.nbf,
+            unique_name: decoded.unique_name,
+          }));
+        } else {
+          console.error('Decode edilen token null döndü');
+        }
+      } else {
+        console.error('Token localStorage\'da bulunamadı');
+      }
+    } catch (error) {
+      console.error('Login işlemi sırasında hata oluştu:', error);
+    }
   };
+
 
   return (
     <div className="flex flex-col items-center h-screen">
@@ -36,4 +73,4 @@ const adminLogin = () => {
   );
 };
 
-export default adminLogin;
+export default AdminLogin;

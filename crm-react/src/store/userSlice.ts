@@ -7,7 +7,7 @@ interface UserState {
   exp: number | null;
   iat: number | null;
   iss: string | null;
-  nameid: string | null;
+  id: string | null;
   nbf: number | null;
   unique_name: string | null;
 }
@@ -18,7 +18,7 @@ const initialState: UserState = {
   exp: null,
   iat: null,
   iss: null,
-  nameid: null,
+  id: null,
   nbf: null,
   unique_name: null,
 };
@@ -33,7 +33,7 @@ const userSlice = createSlice({
       state.exp = action.payload.exp;
       state.iat = action.payload.iat;
       state.iss = action.payload.iss;
-      state.nameid = action.payload.nameid;
+      state.id = action.payload.id;
       state.nbf = action.payload.nbf;
       state.unique_name = action.payload.unique_name;
     },
@@ -43,7 +43,7 @@ const userSlice = createSlice({
       state.exp = null;
       state.iat = null;
       state.iss = null;
-      state.nameid = null;
+      state.id = null;
       state.nbf = null;
       state.unique_name = null;
     },

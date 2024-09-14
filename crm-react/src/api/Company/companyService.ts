@@ -34,6 +34,11 @@ interface updateSubUser {
   companyId : number;
 }
 
+interface EmployeeLogin {
+  email: string;
+  password: string;
+}
+
 export const companyLogin = async (data: Company) => {
   try {
     const response = await apiClient.post('/api/login/company', data);
@@ -107,5 +112,20 @@ export const updateSubUser = async (data: updateSubUser) => {
   } catch (error) {
     toast.error('User update failed');
     throw new Error(`User update failed: ${error}`);
+  }
+};
+
+export const employeeLogin = async (data: EmployeeLogin) => {
+  try {
+    const response = await apiClient.post('/api/login/employee', data);
+    localStorage.setItem("token", response.data.token);  
+    toast.success('Login successful',{position: "bottom-right", autoClose: 500});
+    setTimeout(() => {
+      window.location.href = '/';
+    }, 1);
+    return response.data;
+  } catch (error) {
+    toast.error('Login failed' ,{position: "bottom-right", autoClose: 500});
+    throw new Error(`Login failed: ${error}`);
   }
 };

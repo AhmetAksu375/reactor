@@ -25,7 +25,7 @@ const App = () => {
          <Routes> 
           <Route path="/" element={ controlrole.aud === "admin" ? <AdminRoot/> : <CompanyRoot/> }/>
           <Route path="/admin/*" element={controlrole.aud === "admin" ? <AdminRoot/> : <CompanyRoot/>}/>
-          <Route path="/company/*"  element={controlrole.aud === "company" ? <CompanyRoot/> : <AdminRoot/>}/> 
+          <Route path="/company/*"  element={controlrole.aud === "company" || controlrole.aud === "employee" ? <CompanyRoot/> : <AdminRoot/>}/> 
          </Routes> : 
          <Routes> 
           <Route path="/" element={ <CompanyRoot/> }/>

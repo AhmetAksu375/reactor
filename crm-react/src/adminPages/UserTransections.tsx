@@ -2,8 +2,9 @@ import * as React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import AddUser from '../addUser';
-import EmployoesList from '@/compenents/emplooyesList';
+import AddSubAdmin from "./addSubAdmin";
+import SubAdminList from '@/compenents/SubAdminList';
+
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -41,25 +42,25 @@ export default function ScrollableTabsWithContent() {
   };
 
   return (
-    <div className='w-screen'>
+    <div className='w-full'>
     <Box sx={{ width: '100%'}}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs
           value={value}
           onChange={handleChange}
-          variant="scrollable" // Kaydırılabilir hale getirildi
-          scrollButtons="auto" // Otomatik kaydırma butonları
+          variant="scrollable" 
+          scrollButtons="auto"
           aria-label="scrollable tabs with content"
         >
-          <Tab label="User List" {...a11yProps(0)} />
-          <Tab label="Add User" {...a11yProps(1)} />
+          <Tab label="Admin List" {...a11yProps(0)} />
+          <Tab label="Add Admin" {...a11yProps(1)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-      <EmployoesList/>
+      <SubAdminList/>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <AddUser/>
+        <AddSubAdmin/>
       </CustomTabPanel>
     </Box>
     </div>

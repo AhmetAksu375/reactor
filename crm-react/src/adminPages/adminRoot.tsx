@@ -1,46 +1,35 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+// src/pages/management/Management.jsx
+
+import { authController } from '@/utils/jwtHelper';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import AdminLogin from './auth/adminLogin';
-import AdminRegister from './auth/adminRegister';
-import Navbar from './Navbar';
-import Panel from './panel/panel';
-import { auth } from '../utils/auth'; // Assuming auth is a function
+import SidebarAdmin from '@/compenents/SidebarAdmin';
+import MainPage from './MainPage';
+import UserTransections from './UserTransections';
+import AdminLoginHeader from '@/compenents/AdminLoginHeader';
 
-const AdminRoot = () => {
-  // Check if the user is authenticated
-  const isAuthenticated = auth; // Ensure this returns true/false based on authentication
+interface Userrole {
+  aud:string;
+}
 
+const CompanyRoot = () => {
+const controlrole:Userrole = authController() || { aud: "" };
+  const location = useLocation();
+  const mainpath = location.pathname.startsWith('/')
   return (
-    <div>
-      
-      <Navbar />
-
-      <Routes>
-        {/* Panel route: If not authenticated, redirect to login */}
-        <Route
-          path="panel"
-          element={isAuthenticated ? <Panel /> : <Navigate to="/admin/login" />}
-        />
-
-        {/* Login: If authenticated, redirect to panel */}
-        <Route
-          path="login"
-          element={isAuthenticated ? <Navigate to="/admin/panel" /> : <AdminLogin />}
-        />
-
-        {/* Register: If authenticated, redirect to panel */}
-        <Route
-          path="register"
-          element={isAuthenticated ? <Navigate to="/admin/panel" /> : <AdminRegister />}
-        />
-
-        {/* Fallback route: Redirect to login if no matching route */}
-        <Route
-          path="*"
-          element={<Navigate to={isAuthenticated ? "/admin/panel" : "/admin/login"} />}
-        />
-      </Routes>
+    <div className='pt-20'>
+    <div  className={mainpath && controlrole.aud === 'admin' ? "" : "hidden"}>
+      <SidebarAdmin/> 
     </div>
+     <div className={mainpath && controlrole.aud === '' ? "" : "hidden"}>
+     <AdminLoginHeader />
+    </div>
+      <Routes>
+        <Route path="/" element={controlrole.aud === "admin" ? <MainPage/> : <AdminLogin/>} /> 
+        <Route path="/usertransection" element={controlrole.aud === "admin" ? <UserTransections/>: <AdminLogin/>  } />
+
+      </Routes>
+    </div>  
   );
 };
-
-export default AdminRoot;
+export default CompanyRoot;

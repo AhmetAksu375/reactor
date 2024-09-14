@@ -111,8 +111,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-export default function Sidebar() {
-
+export default function SidebarAdmin() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate(); // useNavigate hook'u burada kullanılıyor
@@ -132,12 +131,10 @@ export default function Sidebar() {
 
   const { unique_name } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
-
   const handleLogout = () => {
     dispatch(clearUser());
     deleteToken();
   };
-  
   return (
     <Box sx={{ display: 'flex' }}>
       {/* <DrawerAppBar key={} /> */}
@@ -156,7 +153,7 @@ export default function Sidebar() {
               open && { display: 'none' },
             ]}
           >
-            <MenuIcon /> 
+            <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
             {unique_name}
@@ -173,11 +170,12 @@ export default function Sidebar() {
           </IconButton>
         </DrawerHeader>
         <Divider />        
-        <List>          
+        <List>
+          
           {/* Yeni AddUser menü öğesi */}
           <ListItem disablePadding sx={{ display: 'block' }}>
             <ListItemButton
-              onClick={() => handleNavigateToAddUser('/')} // onClick ile yönlendirme fonksiyonunu çağırıyoruz
+              onClick={() => handleNavigateToAddUser('/admin')} // onClick ile yönlendirme fonksiyonunu çağırıyoruz
               sx={[
                 {
                   minHeight: 48,
@@ -191,7 +189,7 @@ export default function Sidebar() {
                       justifyContent: 'center',
                     },
               ]}
-            >
+            > 
               <ListItemIcon
                 sx={[
                   {
@@ -207,7 +205,7 @@ export default function Sidebar() {
                       },
                 ]}
               >
-                <InboxIcon /> {/* Bu ikonu ihtiyaçlarınıza göre değiştirebilirsiniz */}
+                <InboxIcon />
               </ListItemIcon>
               <ListItemText
                 primary="Main Page" // Menüde görünen metin
@@ -225,7 +223,7 @@ export default function Sidebar() {
           </ListItem>
           <ListItem disablePadding sx={{ display: 'block' }}>
             <ListItemButton
-              onClick={()=>handleNavigateToAddUser('/company/usertransections')} // onClick ile yönlendirme fonksiyonunu çağırıyoruz
+              onClick={()=>handleNavigateToAddUser('/admin/usertransection')} // onClick ile yönlendirme fonksiyonunu çağırıyoruz
               sx={[
                 {
                   minHeight: 48,

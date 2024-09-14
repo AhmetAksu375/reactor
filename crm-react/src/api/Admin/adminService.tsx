@@ -28,24 +28,38 @@ interface DeleteDepartmant {
   id: number;
 }
 
+interface AddAdmin {
+  name: string;
+  email: string;
+  password: string;
+  departmantId: number;
+}
+
+interface UpdateAdmin {
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+  departmantId: number;
+}
+
+interface DeleteAdmin {
+  id: number;
+}
+
 export const loginAdmin = async (data: Admin) => {
   try {
     const response = await apiClient.post('/api/login/admin', data);
     localStorage.setItem("token", response.data.token);
     toast.success('Login successful');
-
+    console.log(response.data.token);
     setTimeout(() => {
-       window.location.href = '/admin/panel'; // Replace '/dashboard' with the path you want to redirect to
+       window.location.href = '/admin'; // Replace '/dashboard' with the path you want to redirect to
     }, 1);
-
-
     return response.data.token;
-
   } catch (error) {
     toast.error('Login failed',{position: "bottom-right"});
     throw new Error(`Login failed: ${error}`);
-    
-
   }
 };
 
@@ -107,5 +121,52 @@ export const removeDepartment = async (data: DeleteDepartmant) => {
   }
 }
 
-//EMPLOYEES
+export const getAdmins = async () => {
+  try {
+    const response = await apiClient.get('/api/admin');
+    toast.success('Admins fetched',{position: "bottom-right",autoClose:500});
+    return response.data;
+  } catch (error) {
+    throw new Error(`Admin fetch failed: ${error}`);
+  }
+}
 
+export const addAdmin = async (data: AddAdmin) => {
+  try {
+    const response = await apiClient.post('/api/admin', data);
+    toast.success('Admin added');
+    return response.data;
+  } catch (error) {
+    throw new Error(`Admin add failed: ${error}`);
+  }
+}
+
+export const deleteAdmin = async (data: DeleteAdmin) => {
+  try {
+    const response = await apiClient.delete(`/api/admin/${data.id}`);
+    toast.success('Admin deleted');
+    return response.data;
+  } catch (error) {
+    throw new Error(`Admin delete failed: ${error}`);
+  }
+}
+export const updateAdmin = async (data: UpdateAdmin) => {
+  try {
+    const response = await apiClient.put(`/api/admin/${data.id}`, data);
+    toast.success('Admin updated');
+    return response.data;
+  } catch (error) {
+    throw new Error(`Admin update failed: ${error}`);
+  }
+}
+
+export const getWorks = async () => {
+  try {
+    const response = await apiClient.get('/api/work');
+    toast.success('Works fetched',{position: "bottom-right",autoClose:500}); 
+    return response.data;
+  } catch (error) {
+    toast.error('Work fetch failed',{position: "bottom-right",autoClose:500}); 
+    throw new Error(`Work fetch failed: ${error}`);
+  }
+}

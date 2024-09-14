@@ -16,6 +16,6 @@
 
 export default function panel() {
   return (
-    <div>panel</div>
+    <div className="p-10"></div>
   )
 }
