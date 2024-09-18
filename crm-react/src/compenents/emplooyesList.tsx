@@ -1,7 +1,5 @@
-"use client"
-import { useState } from "react"
-
-import * as React from "react"
+import { getDepartments } from '@/api/Admin/adminService';
+import { useState, useEffect } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -13,11 +11,11 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
+} from "@tanstack/react-table";
+import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -26,8 +24,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -35,8 +33,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+} from "@/components/ui/table";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { getSubUsers, deleteSubUser, updateSubUser } from "@/api/Company/companyService";
 
 export type Employee = {
@@ -46,23 +44,26 @@ export type Employee = {
   departmantId: number;
   password: string;
   companyId: number;
-}
+};
 
 export default function EmployeeList() {
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = useState({})
-  const [data, setData] = useState<Employee[]>([])
-  const [loading, setLoading] = useState(true)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
-  const [updatedName, setUpdatedName] = useState("")
-  const [updatedEmail, setUpdatedEmail] = useState("")
-  const [updatedDepartmantId, setUpdatedDepartmantId] = useState(0)
-  const [updatedPassword, setUpdatedPassword] = useState("")
-  const [updatedCompanyId, setUpdatedCompanyId] = useState(0)
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
+  const [data, setData] = useState<Employee[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const [updatedName, setUpdatedName] = useState("");
+  const [updatedEmail, setUpdatedEmail] = useState("");
+  const [updatedDepartmantId, setUpdatedDepartmantId] = useState(0);
+  const [updatedPassword, setUpdatedPassword] = useState("");
+  const [updatedCompanyId, setUpdatedCompanyId] = useState(0);
+  const [departments, setDepartments] = useState<{ [key: number]: string }>({});
+  const [departmentsList, setDepartmentsList] = useState<{ id: number; name: string }[]>([]);
 
+  // Fetch employee data
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -75,9 +76,28 @@ export default function EmployeeList() {
     }
   };
 
-  React.useEffect(() => {
+  // Fetch department data and map IDs to names
+  const fetchDepartments = async () => {
+    try {
+      const response = await getDepartments(); // Fetch departments using getDepartments
+      setDepartmentsList(response); // Store departments for dropdown
+      const departmentMap = response.reduce(
+        (acc: { [key: number]: string }, dept: { id: number, name: string }) => {
+          acc[dept.id] = dept.name;
+          return acc;
+        },
+        {}
+      );
+      setDepartments(departmentMap);
+    } catch (error) {
+      console.error("Error fetching departments:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
-  }, [])
+    fetchDepartments();
+  }, []);
 
   const handleUpdate = async () => {
     if (selectedEmployee) {
@@ -90,8 +110,8 @@ export default function EmployeeList() {
           password: updatedPassword || selectedEmployee.password,
           companyId: updatedCompanyId || selectedEmployee.companyId,
         });
-        
-        // toast.success('Employee updated successfully',{position: "bottom-right",autoClose: 500});
+
+        // Toast or alert success message
         fetchData();
         setIsDialogOpen(false);
       } catch (error) {
@@ -163,9 +183,7 @@ export default function EmployeeList() {
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => (
-        <div className="text-left">{row.getValue("name")}</div>
-      ),
+      cell: ({ row }) => <div className="text-left">{row.getValue("name")}</div>,
     },
     {
       accessorKey: "email",
@@ -189,12 +207,14 @@ export default function EmployeeList() {
           className="text-left"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Department ID
+          Department
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
       cell: ({ row }) => (
-        <div className="text-left">{row.getValue("departmantId")}</div>
+        <div className="text-left">
+          {departments[row.getValue("departmantId") as number] || "Unknown"}
+        </div>
       ),
     },
     {
@@ -243,10 +263,10 @@ export default function EmployeeList() {
               <DropdownMenuItem onClick={handleOpenUpdateDialog}>Update</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        )
+        );
       },
     },
-  ]
+  ];
 
   const table = useReactTable({
     data,
@@ -265,14 +285,14 @@ export default function EmployeeList() {
       columnVisibility,
       rowSelection,
     },
-  })
+  });
 
   if (loading) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
   return (
-    <div className="w-11/12  overflow-x-auto">
+    <div className="w-11/12 overflow-x-auto">
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter emails..."
@@ -292,20 +312,18 @@ export default function EmployeeList() {
             {table
               .getAllColumns()
               .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
+              .map((column) => (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className="capitalize"
+                  checked={column.getIsVisible()}
+                  onCheckedChange={(value) =>
+                    column.toggleVisibility(!!value)
+                  }
+                >
+                  {column.id}
+                </DropdownMenuCheckboxItem>
+              ))}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -382,8 +400,8 @@ export default function EmployeeList() {
           </Button>
         </div>
       </div>
-      
-      {/* Güncelleme Popup'u */}
+
+      {/* Update Popup */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -400,12 +418,21 @@ export default function EmployeeList() {
               value={updatedEmail}
               onChange={(e) => setUpdatedEmail(e.target.value)}
             />
-            <Input
-              placeholder="Department ID"
-              type="number"
+            {/* Department Dropdown */}
+            <select
               value={updatedDepartmantId}
               onChange={(e) => setUpdatedDepartmantId(Number(e.target.value))}
-            />
+              className="border p-2 rounded"
+            >
+              <option value={0} disabled>
+                Select Department
+              </option>
+              {departmentsList.map((department) => (
+                <option key={department.id} value={department.id}>
+                  {department.name}
+                </option>
+              ))}
+            </select>
             <Input
               placeholder="Password"
               type="password"
@@ -423,5 +450,5 @@ export default function EmployeeList() {
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

@@ -47,11 +47,32 @@ interface DeleteAdmin {
   id: number;
 }
 
+interface PutWork {
+  id : number;
+  status : string;
+  stagingId : number;
+  hours : number;
+  price : number;
+  date_Start : string;
+  date_Finish : string;
+
+}
+
+interface Email {
+  toEmail: string;
+  subject: string;
+  body: string;
+}
+
+interface declineEmail {
+  workId: number;
+  message: string;
+}
+
 export const loginAdmin = async (data: Admin) => {
   try {
     const response = await apiClient.post('/api/login/admin', data);
     localStorage.setItem("token", response.data.token);
-    toast.success('Login successful');
     console.log(response.data.token);
     setTimeout(() => {
        window.location.href = '/admin'; // Replace '/dashboard' with the path you want to redirect to
@@ -67,8 +88,6 @@ export const loginAdmin = async (data: Admin) => {
 export const registerAdmin = async (data: RegisterData) => {
   try {
     const response = await apiClient.post('/api/admin/register', data);
-    toast.success('Register successful');
-
     return response.data;
   } catch (error) {
 
@@ -80,7 +99,6 @@ export const registerAdmin = async (data: RegisterData) => {
 export const createDepartment = async (data: CreateDepartmant) => {
   try {
     const response = await apiClient.post('/api/departmant', data);
-    toast.success('Department created');
     return response.data;
   } catch (error) {
     toast.error('Department creation failed');
@@ -102,7 +120,6 @@ export const getDepartments = async () => {
 export const putDepartment = async (data: PutDepartmant) => {
   try {
     const response = await apiClient.put(`/api/departmant/${data.id}`, data);
-    toast.success('Department updated');
     return response.data;
   } catch (error) {
     toast.error('Department update failed');
@@ -113,7 +130,6 @@ export const putDepartment = async (data: PutDepartmant) => {
 export const removeDepartment = async (data: DeleteDepartmant) => {
   try {
     const response = await apiClient.delete(`/api/departmant/${data.id}`);
-    toast.success('Department removed');
     return response.data;
   } catch (error) {
     toast.error('Department remove failed');
@@ -124,7 +140,6 @@ export const removeDepartment = async (data: DeleteDepartmant) => {
 export const getAdmins = async () => {
   try {
     const response = await apiClient.get('/api/admin');
-    toast.success('Admins fetched',{position: "bottom-right",autoClose:500});
     return response.data;
   } catch (error) {
     throw new Error(`Admin fetch failed: ${error}`);
@@ -134,7 +149,6 @@ export const getAdmins = async () => {
 export const addAdmin = async (data: AddAdmin) => {
   try {
     const response = await apiClient.post('/api/admin', data);
-    toast.success('Admin added');
     return response.data;
   } catch (error) {
     throw new Error(`Admin add failed: ${error}`);
@@ -144,7 +158,6 @@ export const addAdmin = async (data: AddAdmin) => {
 export const deleteAdmin = async (data: DeleteAdmin) => {
   try {
     const response = await apiClient.delete(`/api/admin/${data.id}`);
-    toast.success('Admin deleted');
     return response.data;
   } catch (error) {
     throw new Error(`Admin delete failed: ${error}`);
@@ -153,7 +166,6 @@ export const deleteAdmin = async (data: DeleteAdmin) => {
 export const updateAdmin = async (data: UpdateAdmin) => {
   try {
     const response = await apiClient.put(`/api/admin/${data.id}`, data);
-    toast.success('Admin updated');
     return response.data;
   } catch (error) {
     throw new Error(`Admin update failed: ${error}`);
@@ -163,10 +175,41 @@ export const updateAdmin = async (data: UpdateAdmin) => {
 export const getWorks = async () => {
   try {
     const response = await apiClient.get('/api/work');
-    toast.success('Works fetched',{position: "bottom-right",autoClose:500}); 
     return response.data;
   } catch (error) {
     toast.error('Work fetch failed',{position: "bottom-right",autoClose:500}); 
     throw new Error(`Work fetch failed: ${error}`);
+  }
+}
+
+export const putWork = async (data: PutWork) => {
+  try {
+    const response = await apiClient.put(`/api/work/${data.id}`, data);
+    return response.data;
+  } catch (error) {
+    toast.error('Work update failed',{position: "bottom-right",autoClose:500});
+    throw new Error(`Work update failed: ${error}`);
+  }
+}
+
+
+
+export const sendEmail = async (data: Email) => {
+  try {
+    const response = await apiClient.post('/api/email/send', data);
+    return response.data;
+  } catch (error) {
+    toast.error('Email send failed',{position: "bottom-right",autoClose:500});
+    throw new Error(`Email send failed: ${error}`);
+  }
+}
+
+export const declineEmail = async (data: declineEmail) => { 
+  try {
+    const response = await apiClient.post('/api/email/decline', data);
+    return response.data;
+  } catch (error) {
+    toast.error('Email send failed',{position: "bottom-right",autoClose:500});
+    throw new Error(`Email send failed: ${error}`);
   }
 }

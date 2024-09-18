@@ -1,5 +1,5 @@
 // src/pages/management/Sidebar.jsx
-import * as React from 'react';
+import { useState } from 'react';
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
@@ -17,19 +17,22 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-// import MailIcon from '@mui/icons-material/Mail';
-import { useNavigate } from 'react-router-dom'; // useNavigate import ediliyor
-// import DrawerAppBar from '@/companyPages/home';
+import { useNavigate } from 'react-router-dom'; 
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { deleteToken } from '@/utils/auth';
 import { useDispatch } from 'react-redux';
 import { clearUser } from '@/store/userSlice';
 import { authController } from '@/utils/jwtHelper';
+import HomeIcon from '@mui/icons-material/Home';
+import LogoutIcon from '@mui/icons-material/Logout';
+import PostAddIcon from '@mui/icons-material/PostAdd';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+
 const controlrole = authController();
 const drawerWidth = 240;
-
+const isEmployee = controlrole?.aud === 'employee';
+const isCompany = controlrole?.aud === 'company';
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
   transition: theme.transitions.create('width', {
@@ -114,9 +117,8 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export default function Sidebar() {
 
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate(); // useNavigate hook'u burada kullanılıyor
-
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -130,10 +132,11 @@ export default function Sidebar() {
     navigate(path); // '/company/adduser' yoluna yönlendirme yapılır
   };
 
-  const { unique_name } = useSelector((state: RootState) => state.user);
+  const { unique_name } = useSelector((state: RootState & { user: { unique_name: string } }) => state.user);
+  const { departmant } = useSelector((state: RootState & { user: { departmant: string } }) => state.user);
   const dispatch = useDispatch();
 
-  const handleLogout = () => {
+  const handleLogout = () => { 
     dispatch(clearUser());
     deleteToken();
   };
@@ -164,9 +167,16 @@ export default function Sidebar() {
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
-        <DrawerHeader>
-          <div className='flex items-center justify-center  w-full' >
-            <h1 className='text-xl font-bold'>{controlrole?.aud.toLocaleUpperCase()}</h1>
+        <DrawerHeader 
+              >
+          <div className='flex flex-col py-3 justify-start w-full' >
+            <div className='text-lg  flex'>
+            {/* <p className='font-semibold'>Role : </p>  <span className='pl-2'>{ departmant.length > 11 ? departmant.slice(0,12) + ".." : departmant} </span> */}
+            <p className='font-semibold'>Role : </p>  <span className='pl-2'>{ departmant} </span>
+            </div>
+            <div style={{ display: !open ? 'none' : 'flex' }} className='text-lg flex'>
+            <p  className='font-semibold'>Type : </p>  <span className='pl-2'>{(controlrole?.aud ?? '').charAt(0).toUpperCase() + (controlrole?.aud ?? '').slice(1)} </span>
+            </div>
           </div>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
@@ -207,7 +217,7 @@ export default function Sidebar() {
                       },
                 ]}
               >
-                <InboxIcon /> {/* Bu ikonu ihtiyaçlarınıza göre değiştirebilirsiniz */}
+                <HomeIcon /> {/* Bu ikonu ihtiyaçlarınıza göre değiştirebilirsiniz */}
               </ListItemIcon>
               <ListItemText
                 primary="Main Page" // Menüde görünen metin
@@ -223,9 +233,9 @@ export default function Sidebar() {
               />
             </ListItemButton>
           </ListItem>
-          <ListItem disablePadding sx={{ display: 'block' }}>
+          <ListItem disablePadding sx={{ display: isEmployee || isCompany ? 'block' : 'none'}}>
             <ListItemButton
-              onClick={()=>handleNavigateToAddUser('/company/usertransections')} // onClick ile yönlendirme fonksiyonunu çağırıyoruz
+              onClick={()=>handleNavigateToAddUser('/company/addwork')} // onClick ile yönlendirme fonksiyonunu çağırıyoruz
               sx={[
                 {
                   minHeight: 48,
@@ -255,10 +265,58 @@ export default function Sidebar() {
                       },
                 ]}
               >
-                <InboxIcon /> {/* Bu ikonu ihtiyaçlarınıza göre değiştirebilirsiniz */}
+                <PostAddIcon />
               </ListItemIcon>
               <ListItemText
-                primary="User Transections" // Menüde görünen metin
+                primary="Work Request"
+                sx={[
+                  open
+                    ? {
+                        opacity: 1,
+                      }
+                    : {
+                        opacity: 0,
+                      },
+                ]}
+              />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding sx={{ display: isEmployee ? 'none' : 'block'}}>
+            <ListItemButton
+              onClick={()=>handleNavigateToAddUser('/company/usertransections')} 
+              sx={[
+                {
+                  minHeight: 48,
+                  px: 2.5,
+                },
+                open
+                  ? {
+                      justifyContent: 'initial',
+                    }
+                  : {
+                      justifyContent: 'center',
+                    },
+              ]}
+            >
+              <ListItemIcon
+                sx={[
+                  {
+                    minWidth: 0,
+                    justifyContent: 'center',
+                  },
+                  open
+                    ? {
+                        mr: 3,
+                      }
+                    : {
+                        mr: 'auto',
+                      },
+                ]}
+              >
+                <ManageAccountsIcon /> 
+              </ListItemIcon>
+              <ListItemText
+                primary="User Transections"
                 sx={[
                   open
                     ? {
@@ -273,7 +331,7 @@ export default function Sidebar() {
           </ListItem>
           <ListItem disablePadding sx={{ display: 'block' }}>
             <ListItemButton
-              onClick={handleLogout} // onClick ile yönlendirme fonksiyonunu çağırıyoruz
+              onClick={handleLogout}
               sx={[
                 {
                   minHeight: 48,
@@ -303,7 +361,7 @@ export default function Sidebar() {
                       },
                 ]}
               >
-                <InboxIcon /> {/* Bu ikonu ihtiyaçlarınıza göre değiştirebilirsiniz */}
+                <LogoutIcon /> {/* Bu ikonu ihtiyaçlarınıza göre değiştirebilirsiniz */}
               </ListItemIcon>
               <ListItemText
                 primary="Logout" // Menüde görünen metin
@@ -322,6 +380,7 @@ export default function Sidebar() {
             
         </List>
       </Drawer>
+      
     </Box>
   );
 }

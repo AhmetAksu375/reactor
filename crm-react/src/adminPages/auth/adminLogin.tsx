@@ -34,6 +34,8 @@ const AdminLogin = () => {
             id: decoded.nameid,
             nbf: decoded.nbf,
             unique_name: decoded.unique_name,
+            departmant: null,
+            departmantId: null
           }));
         } else {
           console.error('Decode edilen token null döndü');

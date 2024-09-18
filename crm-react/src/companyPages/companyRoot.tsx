@@ -5,10 +5,12 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import AddUser from './addUser';
 import Home from './home';
 import LoginCompany from './login';
-import Management from './management/management';
+import MainPage from './management/mainPage';
 import UserTransections from './management/userTransections';
 import Registerr from './registerr';
 import CompanyLoginHeader from '@/compenents/companyLoginHeader';
+import Addwork from './addwork';
+
 interface Userrole {
   aud:string;
 }
@@ -29,11 +31,11 @@ const controlrole:Userrole = authController() || { aud: "" };
     <CompanyLoginHeader />
     </div>
       <Routes>
-        <Route path="/" element={controlrole.aud === "company" || controlrole.aud === "employee" ? <Management/> : <LoginCompany />} /> 
-        <Route path="/login" element={controlrole.aud === "company" || controlrole.aud === "employee" ? <Management/>: <LoginCompany/>  } />
-        <Route path="/register" element={controlrole.aud === "company" || controlrole.aud === "employee" ? <Management/> : <Registerr/>  } />
+        <Route path="/" element={controlrole.aud === "company" || controlrole.aud === "employee" ? <MainPage/> : <LoginCompany />} /> 
+        <Route path="/addwork" element={controlrole.aud === "company" || controlrole.aud === "employee" ? <Addwork/> : <LoginCompany/>} />  
+        <Route path="/login" element={controlrole.aud === "company" || controlrole.aud === "employee" ? <MainPage/>: <LoginCompany/>  } />
+        <Route path="/register" element={controlrole.aud === "company" || controlrole.aud === "employee" ? <MainPage/> : <Registerr/>  } />
         <Route path="/addUser" element={controlrole.aud === "company" || controlrole.aud === "employee" ? <AddUser/> : <LoginCompany/>} /> 
-        {/* <Route path="/usertransections" element={controlrole.aud === "company"  ? <UserTransections/> : <LoginCompany/> } />  */}
         <Route path="/usertransections" element={controlrole.aud === "employee" || controlrole.aud === "company"  ? <UserTransections/> : <LoginCompany/> } /> 
       </Routes>
     </div>  

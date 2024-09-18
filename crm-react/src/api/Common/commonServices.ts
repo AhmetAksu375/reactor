@@ -6,7 +6,7 @@ export const getDepartmant = async () => {
         const response = await apiClient.get('/api/departmant');
         return response.data;
     } catch (error) {
-        toast.error('Departmant get failed');
-        throw new Error(`Departmant get failed: ${error}`);
+        toast.error('Departments get failed');
+        throw new Error(`Departments get failed: ${error}`);
     }
 }

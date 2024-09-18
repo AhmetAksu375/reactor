@@ -10,6 +10,8 @@ interface UserState {
   id: string | null;
   nbf: number | null;
   unique_name: string | null;
+  departmant:string | null;
+  departmantId:string | null;
 }
 
 const initialState: UserState = {
@@ -21,6 +23,8 @@ const initialState: UserState = {
   id: null,
   nbf: null,
   unique_name: null,
+  departmant:null,
+  departmantId:null
 };
 
 const userSlice = createSlice({
@@ -36,6 +40,8 @@ const userSlice = createSlice({
       state.id = action.payload.id;
       state.nbf = action.payload.nbf;
       state.unique_name = action.payload.unique_name;
+      state.departmant = action.payload.departmant;
+      state.departmantId = action.payload.departmantId;
     },
     clearUser: (state) => {
       state.aud = null;
@@ -46,6 +52,8 @@ const userSlice = createSlice({
       state.id = null;
       state.nbf = null;
       state.unique_name = null;
+      state.departmant = null;
+      state.departmantId = null;
     },
   },
 });

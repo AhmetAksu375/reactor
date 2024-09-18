@@ -17,16 +17,18 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-// import MailIcon from '@mui/icons-material/Mail';
-import { useNavigate } from 'react-router-dom'; // useNavigate import ediliyor
-// import DrawerAppBar from '@/companyPages/home';
+import { useNavigate } from 'react-router-dom'; 
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { deleteToken } from '@/utils/auth';
 import { useDispatch } from 'react-redux';
 import { clearUser } from '@/store/userSlice';
 import { authController } from '@/utils/jwtHelper';
+import HomeIcon from '@mui/icons-material/Home';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import LogoutIcon from '@mui/icons-material/Logout';
+import EmailIcon from '@mui/icons-material/Email';
+
 const controlrole = authController();
 const drawerWidth = 240;
 
@@ -114,7 +116,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export default function SidebarAdmin() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const navigate = useNavigate(); // useNavigate hook'u burada kullanılıyor
+  const navigate = useNavigate(); 
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -124,9 +126,9 @@ export default function SidebarAdmin() {
     setOpen(false);
   };
 
-  // Yeni menü öğesi ve yönlendirme işlemi
+ 
   const handleNavigateToAddUser = (path:string) => {
-    navigate(path); // '/company/adduser' yoluna yönlendirme yapılır
+    navigate(path); 
   };
 
   const { unique_name } = useSelector((state: RootState) => state.user);
@@ -205,7 +207,7 @@ export default function SidebarAdmin() {
                       },
                 ]}
               >
-                <InboxIcon />
+                <HomeIcon />
               </ListItemIcon>
               <ListItemText
                 primary="Main Page" // Menüde görünen metin
@@ -223,7 +225,7 @@ export default function SidebarAdmin() {
           </ListItem>
           <ListItem disablePadding sx={{ display: 'block' }}>
             <ListItemButton
-              onClick={()=>handleNavigateToAddUser('/admin/usertransection')} // onClick ile yönlendirme fonksiyonunu çağırıyoruz
+              onClick={()=>handleNavigateToAddUser('/admin/usertransection')}
               sx={[
                 {
                   minHeight: 48,
@@ -253,10 +255,10 @@ export default function SidebarAdmin() {
                       },
                 ]}
               >
-                <InboxIcon /> {/* Bu ikonu ihtiyaçlarınıza göre değiştirebilirsiniz */}
+                <ManageAccountsIcon /> 
               </ListItemIcon>
               <ListItemText
-                primary="User Transections" // Menüde görünen metin
+                primary="User Transections" 
                 sx={[
                   open
                     ? {
@@ -271,7 +273,7 @@ export default function SidebarAdmin() {
           </ListItem>
           <ListItem disablePadding sx={{ display: 'block' }}>
             <ListItemButton
-              onClick={handleLogout} // onClick ile yönlendirme fonksiyonunu çağırıyoruz
+              onClick={()=>handleNavigateToAddUser('/admin/email')}
               sx={[
                 {
                   minHeight: 48,
@@ -301,10 +303,58 @@ export default function SidebarAdmin() {
                       },
                 ]}
               >
-                <InboxIcon /> {/* Bu ikonu ihtiyaçlarınıza göre değiştirebilirsiniz */}
+                <EmailIcon /> 
               </ListItemIcon>
               <ListItemText
-                primary="Logout" // Menüde görünen metin
+                primary="E-mail" 
+                sx={[
+                  open
+                    ? {
+                        opacity: 1,
+                      }
+                    : {
+                        opacity: 0,
+                      },
+                ]}
+              />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding sx={{ display: 'block' }}>
+            <ListItemButton
+              onClick={handleLogout} 
+              sx={[
+                {
+                  minHeight: 48,
+                  px: 2.5,
+                },
+                open
+                  ? {
+                      justifyContent: 'initial',
+                    }
+                  : {
+                      justifyContent: 'center',
+                    },
+              ]}
+            >
+              <ListItemIcon
+                sx={[
+                  {
+                    minWidth: 0,
+                    justifyContent: 'center',
+                  },
+                  open
+                    ? {
+                        mr: 3,
+                      }
+                    : {
+                        mr: 'auto',
+                      },
+                ]}
+              >
+                <LogoutIcon /> 
+              </ListItemIcon>
+              <ListItemText
+                primary="Logout" 
                 sx={[
                   open
                     ? {

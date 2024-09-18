@@ -10,6 +10,8 @@ export interface DecodedToken {
   nameid: string;
   nbf: number;
   unique_name: string;
+  departmant: string;
+  departmantId: string;
 }
 
 export const decodeToken = (token: string): DecodedToken | null => {

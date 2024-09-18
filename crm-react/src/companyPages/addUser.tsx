@@ -11,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-//import { RootState } from '@/store/store';
 
 interface Department {
   id: number;

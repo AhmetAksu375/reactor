@@ -19,7 +19,7 @@ const App = () => {
       <PersistGate loading={null} persistor={persistor}>
     <Router>
         <ToastContainer />
-      <div className="flex flex-col px-24 py-12">
+      <div className="flex flex-col md:ml-2 md:px-24 py-12">
    
          { controlrole.aud ? 
          <Routes> 
@@ -32,13 +32,7 @@ const App = () => {
           <Route path="/admin/*" element={<AdminRoot/>}/>
           <Route path="/company/*"  element={<CompanyRoot/>}/>
          </Routes>
-           }
-          {/*
-          <Route path="/" element={ controlrole.aud === "admin" ? <AdminRoot/> : <CompanyRoot/> }/>
-          <Route path="/admin/*" element={controlrole.aud === "admin" ? <AdminRoot/> : <CompanyRoot/>}/>
-          <Route path="/company/*"  element={controlrole.aud === "company" ? <CompanyRoot/> : <AdminRoot/>}/>*/
-          }
-    
+           }    
       </div>
     </Router>
     </PersistGate>

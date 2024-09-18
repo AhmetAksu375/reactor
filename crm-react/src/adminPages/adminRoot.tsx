@@ -8,6 +8,7 @@ import MainPage from './MainPage';
 import UserTransections from './UserTransections';
 import AdminLoginHeader from '@/compenents/AdminLoginHeader';
 
+
 interface Userrole {
   aud:string;
 }
@@ -27,6 +28,8 @@ const controlrole:Userrole = authController() || { aud: "" };
       <Routes>
         <Route path="/" element={controlrole.aud === "admin" ? <MainPage/> : <AdminLogin/>} /> 
         <Route path="/usertransection" element={controlrole.aud === "admin" ? <UserTransections/>: <AdminLogin/>  } />
+        
+        
 
       </Routes>
     </div>  

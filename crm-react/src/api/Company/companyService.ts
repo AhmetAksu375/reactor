@@ -8,7 +8,7 @@ interface Company {
 }
 
 interface CompanyRegisterData extends Company {
-  username: string;
+  name: string;
   email:string;
   password:string;
 }
@@ -21,7 +21,6 @@ interface createSubUser {
   
 }
   
-
 interface deleteSubUser {
   id : number;
 }
@@ -39,11 +38,17 @@ interface EmployeeLogin {
   password: string;
 }
 
+interface AddWork {
+  title: string;
+  description: string;
+  priorityId: number;
+  departmantId: number;
+}
+
 export const companyLogin = async (data: Company) => {
   try {
     const response = await apiClient.post('/api/login/company', data);
     localStorage.setItem("token", response.data.token);  
-    toast.success('Login successful');
     setTimeout(() => {
       window.location.href = '/company';
     }, 1);
@@ -56,12 +61,14 @@ export const companyLogin = async (data: Company) => {
   }
 };
 
-// Register method
+
 export const companyRegister = async (data: CompanyRegisterData) => {
   try {
-    const response = await apiClient.post('/api/User/register', data);
+    const response = await apiClient.post('/api/register/company', data);
+    toast.success('Registration successful');
     return response.data;
   } catch (error) {
+    toast.error('Registration failed', {position: "bottom-right", autoClose: 500});
     throw new Error(`Registration failed: ${error}`);
   }
 };
@@ -70,7 +77,6 @@ export const companyRegister = async (data: CompanyRegisterData) => {
 export const createSubUser = async (data:createSubUser)=>{
   try {
     const response = await apiClient.post('/api/Employee', data);
-    toast.success('User created successfully');
     return response.data;
   } catch (error) {
     toast.error('User creation failed');
@@ -81,7 +87,6 @@ export const createSubUser = async (data:createSubUser)=>{
 export const getSubUsers = async () => {
   try {
     const response = await apiClient.get('/api/Employee');
-    toast.success('User list fetched successfully',{position: "bottom-right", autoClose: 500});
     return response.data;
   } catch (error: any) {
     if (error.response && error.response.status === 401) {
@@ -96,7 +101,6 @@ export const getSubUsers = async () => {
 export const deleteSubUser = async (data: deleteSubUser) => {
   try {
     const response = await apiClient.delete(`/api/Employee/${data.id}`);
-    toast.success('User deleted successfully');
     return response.data;
   } catch (error) {
     toast.error('User deletion failed');
@@ -107,7 +111,6 @@ export const deleteSubUser = async (data: deleteSubUser) => {
 export const updateSubUser = async (data: updateSubUser) => {
   try {
     const response = await apiClient.put(`/api/Employee/${data.id}`, data);
-    toast.success('User updated successfully',{position: "bottom-right", autoClose: 500});
     return response.data;
   } catch (error) {
     toast.error('User update failed');
@@ -119,7 +122,6 @@ export const employeeLogin = async (data: EmployeeLogin) => {
   try {
     const response = await apiClient.post('/api/login/employee', data);
     localStorage.setItem("token", response.data.token);  
-    toast.success('Login successful',{position: "bottom-right", autoClose: 500});
     setTimeout(() => {
       window.location.href = '/';
     }, 1);
@@ -129,3 +131,28 @@ export const employeeLogin = async (data: EmployeeLogin) => {
     throw new Error(`Login failed: ${error}`);
   }
 };
+
+export const addWork = async (data: AddWork) => {
+  try {
+    const response = await apiClient.post('/api/Work', data);
+    toast.success('Work added successfully');
+    return response.data;
+  } catch (error) {
+    toast.error('Work addition failed');
+    throw new Error(`Work addition failed: ${error}`);
+  }
+}
+
+export const companyWorkList = async () => {
+  try {
+    const response = await apiClient.get('/api/Work');
+    return response.data;
+  }catch (error: any) {
+    if (error.response && error.response.status === 401) {
+      toast.error('Unauthorized: Please log in again.');
+    } else {
+      toast.error('Work list fetch failed');
+    }
+    throw new Error(`Work list fetch failed: ${error}`);
+  }
+}
