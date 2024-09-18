@@ -1,25 +1,44 @@
 // src/pages/management/Management.jsx
-import { Routes, Route } from 'react-router-dom';
-import Login from './login';
+import Sidebar from '@/compenents/Sidebar';
+import { authController } from '@/utils/jwtHelper';
+import { Route, Routes, useLocation } from 'react-router-dom';
+import AddUser from './addUser';
+import Home from './home';
+import LoginCompany from './login';
+import MainPage from './management/mainPage';
+import UserTransections from './management/userTransections';
 import Registerr from './registerr';
-import Management from './management/management';
-import Home from './home'
-import AddUser from './addUser'; 
-const CompanyRoot = () => {
-  return (
-    
-    <div>
-       <Home/>
-      <Routes>
-        <Route path="/Login" element={<Login />} />
-        <Route path="/register" element={<Registerr />} />
-        <Route path="/addUser" element={<AddUser />} /> 
-        <Route path='Management' element={<Management />} />
+import CompanyLoginHeader from '@/compenents/companyLoginHeader';
+import Addwork from './addwork';
 
-      </Routes>
+interface Userrole {
+  aud:string;
+}
+
+const CompanyRoot = () => {
+const controlrole:Userrole = authController() || { aud: "" };
+  const location = useLocation();
+  const mainpath = location.pathname.startsWith('/')
+  return (
+    <div className='pt-10'>
+    <div  className={mainpath && controlrole.aud === 'admin' ? "" : "hidden"}>
+      <Home/> 
     </div>
-    
+     <div className={mainpath && controlrole.aud === 'company' || controlrole.aud === 'employee' ? "" : "hidden"}>
+     <Sidebar />
+    </div>
+    <div className={mainpath && controlrole.aud === '' ? "" : "hidden"}>
+    <CompanyLoginHeader />
+    </div>
+      <Routes>
+        <Route path="/" element={controlrole.aud === "company" || controlrole.aud === "employee" ? <MainPage/> : <LoginCompany />} /> 
+        <Route path="/addwork" element={controlrole.aud === "company" || controlrole.aud === "employee" ? <Addwork/> : <LoginCompany/>} />  
+        <Route path="/login" element={controlrole.aud === "company" || controlrole.aud === "employee" ? <MainPage/>: <LoginCompany/>  } />
+        <Route path="/register" element={controlrole.aud === "company" || controlrole.aud === "employee" ? <MainPage/> : <Registerr/>  } />
+        <Route path="/addUser" element={controlrole.aud === "company" || controlrole.aud === "employee" ? <AddUser/> : <LoginCompany/>} /> 
+        <Route path="/usertransections" element={controlrole.aud === "employee" || controlrole.aud === "company"  ? <UserTransections/> : <LoginCompany/> } /> 
+      </Routes>
+    </div>  
   );
 };
-
 export default CompanyRoot;

@@ -1,11 +1,21 @@
-// src/api/apiClient.ts
-import axios, { AxiosInstance } from 'axios';
+import axios from 'axios';
 
-const apiClient: AxiosInstance = axios.create({
-  baseURL: 'https://10.16.17.69:5001/', 
-  headers: {
-    'Content-Type': 'application/json',
-  },
+const axiosInstance = axios.create({
+  baseURL: 'https://10.16.17.65:7004',
+  timeout: 10000,
 });
 
-export default apiClient;
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`; // Token formatını düzelttik
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+export default axiosInstance;

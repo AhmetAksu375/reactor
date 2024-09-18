@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import Toolbar from '@mui/material/Toolbar';
 import MenuIcon from '@mui/icons-material/Menu';
 import { NavLink, useNavigate } from 'react-router-dom'; // Added useNavigate for navigation
-import { auth,deleteToken } from '../../utils/auth'; // Assuming auth is a function or a boolean
+import { auth,deleteToken } from '../utils/auth'; // Assuming auth is a function or a boolean
 
 interface Props {
   window?: () => Window;

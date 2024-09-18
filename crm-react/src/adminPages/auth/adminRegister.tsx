@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { registerAdmin } from '../../api/Admin/adminService';
 
 export default function adminRegister() {
