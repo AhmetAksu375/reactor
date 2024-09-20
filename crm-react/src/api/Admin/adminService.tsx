@@ -69,6 +69,10 @@ interface declineEmail {
   message: string;
 }
 
+interface deleteWork {
+  id: number;
+}
+
 export const loginAdmin = async (data: Admin) => {
   try {
     const response = await apiClient.post('/api/login/admin', data);
@@ -191,12 +195,32 @@ export const putWork = async (data: PutWork) => {
     throw new Error(`Work update failed: ${error}`);
   }
 }
-
-
+// export const putWork = async (data: PutWork) => {
+//   try {
+//     const responsePromise = apiClient.put(`/api/work/${data.id}`, data);
+    
+//     // Toast loading, success, and error durumlarını gösteriyor
+//     await toast.promise(
+//       responsePromise,
+//       {
+//         pending: 'Work is being updated...',
+//         success: 'Work updated successfully!',
+//         error: {
+//           render({ data }) {
+//             return `Work update failed: ${(data as { message: string }).message || data}`;
+//           }
+//         }
+//       },
+//       {
+//         position: "bottom-right",
+//         autoClose: 1500
+//       }
+//     );
 
 export const sendEmail = async (data: Email) => {
   try {
     const response = await apiClient.post('/api/email/send', data);
+    toast.success('Email send successfully',{position: "bottom-right",autoClose:500});
     return response.data;
   } catch (error) {
     toast.error('Email send failed',{position: "bottom-right",autoClose:500});
@@ -204,12 +228,31 @@ export const sendEmail = async (data: Email) => {
   }
 }
 
-export const declineEmail = async (data: declineEmail) => { 
+export const declineEmail1 = async (data: declineEmail) => { 
   try {
     const response = await apiClient.post('/api/email/decline', data);
     return response.data;
   } catch (error) {
     toast.error('Email send failed',{position: "bottom-right",autoClose:500});
     throw new Error(`Email send failed: ${error}`);
+  }
+}
+
+export const declineEmail = async (data: declineEmail) => {
+  try {
+    const response = await apiClient.post('/api/email/decline', data);
+    return response.data;
+  } catch (error) {
+    throw new Error(`Work decline failed: ${error}`);
+  }
+}
+
+export const deleteWork = async (data: deleteWork) => {
+  try {
+    const response = await apiClient.delete(`/api/work/delete/${data.id}`);
+    return response.data;
+  } catch (error) {
+    toast.error('Work delete failed',{position: "bottom-right",autoClose:500});
+    throw new Error(`Work delete failed: ${error}`);
   }
 }

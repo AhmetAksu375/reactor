@@ -26,7 +26,7 @@ const DrawerAppBar = (props: Props) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (location.pathname.includes('/login')) {
+    if (location.pathname.includes('/login') || location.pathname === '/') {
       setPath('Login');
     } else if (location.pathname.includes('/register')) {
       setPath('Register');
@@ -34,7 +34,7 @@ const DrawerAppBar = (props: Props) => {
   }, [location.pathname]);
 
   const drawerWidth = 240;
-  const navItems = path === 'Login' 
+  const navItems = path === 'Login' || path === '' 
     ? [
         { key: 'company/register', label: 'Register' }, 
       ]

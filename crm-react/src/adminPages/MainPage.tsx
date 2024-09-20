@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getWorks, putWork, declineEmail } from "@/api/Admin/adminService";
+import { getWorks, putWork, declineEmail,deleteWork } from "@/api/Admin/adminService";
 import {
   ColumnDef,
   flexRender,
@@ -43,6 +43,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { toast } from "react-toastify";
 
 const stagingOptions = [
   { id: 0, name: "Planning" },
@@ -122,7 +123,33 @@ export default function MainPage() {
     { accessorKey: "departmant.name", header: "Department" },
     { accessorKey: "hours", header: "Hours" },
     { accessorKey: "price", header: "Price" },
-    { accessorKey: "status", header: "Status" },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ getValue }) => {
+        const status = getValue<string>();
+        let colorClass = "";
+
+        switch (status) {
+          case "Declined":
+            colorClass = "text-red-600 font-bold";
+            break;
+          case "Completed":
+            colorClass = "text-green-600 font-bold";
+            break;
+          case "In Progress":
+            colorClass = "text-blue-600 font-bold"; // Customize as needed
+            break;
+          case "Pending":
+            colorClass = "text-yellow-600 font-bold"; // Customize as needed
+            break;
+          default:
+            colorClass = "text-gray-600";
+        }
+
+        return <span className={colorClass}>{status}</span>;
+      },
+    },
     { accessorKey: "workerCount", header: "Worker" },
     {
       accessorKey: "stagingId",
@@ -167,11 +194,54 @@ export default function MainPage() {
           </div>
         );
       },
-    },
-    {
+        },
+        {
       id: "actions",
       cell: ({ row }) => {
         const work = row.original;
+        async function handleCompleted(work: Work) {
+          if (work.status === "Completed") return;
+
+          try {
+        const updatedWork = {
+          ...work,
+          status: "Completed",
+        };
+
+        await toast.promise(
+          putWork(updatedWork),
+          {
+            pending: "Marking work as completed...",
+            success: "Work marked as completed!",
+            error: "Failed to mark work as completed.",
+          },
+          {
+            position: "bottom-right",
+            autoClose: 500,
+          }
+        );
+
+        const worksData = await getWorks();
+        const sortedWorks = worksData.sort((a: Work, b: Work) => b.id - a.id);
+        setWorks(sortedWorks);
+          } catch (error) {
+        console.error("Error marking work as completed:", error);
+          }
+        }
+        async function handleDeleteWork(work: Work) {
+          try {
+            await deleteWork({ id: work.id });
+            const worksData = await getWorks();
+            const sortedWorks = worksData.sort((a: Work, b: Work) => b.id - a.id);
+            setWorks(sortedWorks);
+            toast.success("Work deleted successfully!", {
+              position: "bottom-right",
+              autoClose: 500,
+            });
+          } catch (error) {
+          
+          }
+        }
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -185,10 +255,22 @@ export default function MainPage() {
                 Edit
               </DropdownMenuItem>
               <DropdownMenuItem
+                onClick={() => handleCompleted(work)}
+                className="text-green-600"
+              >
+                Completed
+              </DropdownMenuItem>
+              <DropdownMenuItem
                 onClick={() => handleDeclineClick(work)}
                 className="text-red-600"
               >
                 Decline
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleDeleteWork(work)}
+                className="text-red-600"
+              >
+                Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -284,6 +366,7 @@ export default function MainPage() {
       setWorks(sortedWorks);
       handleCloseModal();
     } catch (error) {
+      
       console.error("Error updating work:", error);
     }
   };
@@ -310,10 +393,24 @@ export default function MainPage() {
       await putWork(updatedWork);
 
       // Decline email gönder
-      await declineEmail({
-        workId: selectedWork.id,
-        message: declineMessage,
-      });
+      // await declineEmail({
+      //   workId: selectedWork.id,
+      //   message: declineMessage,
+      // })
+
+      await toast.promise(
+         declineEmail({
+          workId: selectedWork.id,
+          message: declineMessage,
+        }),
+        {
+          pending: "Sending decline email...",
+          success: "Decline email sent successfully!",
+          error: "Error sending decline email",
+        },
+        {position: "bottom-right",autoClose:500}
+      );
+      ;
 
       // Works listesini güncelle
       const worksData = await getWorks();

@@ -90,7 +90,31 @@ export default function CompanyWorksList() {
     { accessorKey: "departmant.name", header: "Department" },
     { accessorKey: "hours", header: "Hours" },
     { accessorKey: "price", header: "Price" },
-    { accessorKey: "status", header: "Status" },
+    { accessorKey: "status", header: "Status",
+      cell: ({ getValue }) => {
+        const status = getValue<string>();
+        let colorClass = "";
+
+        switch (status) {
+          case "Declined":
+            colorClass = "text-red-600 font-bold";
+            break;
+          case "Completed":
+            colorClass = "text-green-600 font-bold";
+            break;
+          case "In Progress":
+            colorClass = "text-blue-600 font-bold"; // Customize as needed
+            break;
+          case "Pending":
+            colorClass = "text-yellow-600 font-bold"; // Customize as needed
+            break;
+          default:
+            colorClass = "text-gray-600";
+        }
+
+        return <span className={colorClass}>{status}</span>;
+      },
+     },
     { accessorKey: "workerCount", header: "Worker Count" },
     {
       accessorKey: "stagingId",
@@ -120,9 +144,19 @@ export default function CompanyWorksList() {
     {
       accessorKey: "priorityId",
       header: "Priority",
-      cell: (info) => {
-        const priorityId = info.getValue() as number;
-        return priorityId === 0 ? "Low" : priorityId === 1 ? "Medium" : "High";
+      cell: ({ row }) => {
+        const priorityId = row.getValue<number>("priorityId");
+        const color =
+          priorityId === 0
+            ? "bg-yellow-300"
+            : priorityId === 1
+            ? "bg-orange-400"
+            : "bg-red-500";
+        return (
+          <div className="flex justify-center items-center">
+            <span className={`w-3 h-3 rounded-full ${color}`}></span>
+          </div>
+        );
       },
     },
     {

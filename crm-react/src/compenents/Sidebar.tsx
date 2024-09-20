@@ -28,7 +28,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
-
+import ReceiptIcon from '@mui/icons-material/Receipt';
 const controlrole = authController();
 const drawerWidth = 240;
 const isEmployee = controlrole?.aud === 'employee';
@@ -317,6 +317,54 @@ export default function Sidebar() {
               </ListItemIcon>
               <ListItemText
                 primary="User Transections"
+                sx={[
+                  open
+                    ? {
+                        opacity: 1,
+                      }
+                    : {
+                        opacity: 0,
+                      },
+                ]}
+              />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding sx={{ display: isEmployee || isCompany ? 'block' : 'none'}}>
+            <ListItemButton
+              onClick={()=>handleNavigateToAddUser('/company/bills')} // onClick ile yönlendirme fonksiyonunu çağırıyoruz
+              sx={[
+                {
+                  minHeight: 48,
+                  px: 2.5,
+                },
+                open
+                  ? {
+                      justifyContent: 'initial',
+                    }
+                  : {
+                      justifyContent: 'center',
+                    },
+              ]}
+            >
+              <ListItemIcon
+                sx={[
+                  {
+                    minWidth: 0,
+                    justifyContent: 'center',
+                  },
+                  open
+                    ? {
+                        mr: 3,
+                      }
+                    : {
+                        mr: 'auto',
+                      },
+                ]}
+              >
+                <ReceiptIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="Bills"
                 sx={[
                   open
                     ? {

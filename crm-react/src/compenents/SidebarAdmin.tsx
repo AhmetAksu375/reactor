@@ -1,62 +1,63 @@
 // src/pages/management/Sidebar.jsx
-import * as React from 'react';
-import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import MuiDrawer from '@mui/material/Drawer';
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
-import CssBaseline from '@mui/material/CssBaseline';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import { useNavigate } from 'react-router-dom'; 
-import { useSelector } from 'react-redux';
-import { RootState } from '@/store/store';
-import { deleteToken } from '@/utils/auth';
-import { useDispatch } from 'react-redux';
-import { clearUser } from '@/store/userSlice';
-import { authController } from '@/utils/jwtHelper';
-import HomeIcon from '@mui/icons-material/Home';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
-import LogoutIcon from '@mui/icons-material/Logout';
-import EmailIcon from '@mui/icons-material/Email';
+import * as React from "react";
+import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import MuiDrawer from "@mui/material/Drawer";
+import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import List from "@mui/material/List";
+import CssBaseline from "@mui/material/CssBaseline";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { deleteToken } from "@/utils/auth";
+import { useDispatch } from "react-redux";
+import { clearUser } from "@/store/userSlice";
+import { authController } from "@/utils/jwtHelper";
+import HomeIcon from "@mui/icons-material/Home";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import LogoutIcon from "@mui/icons-material/Logout";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import ClassIcon from '@mui/icons-material/Class';
 
 const controlrole = authController();
 const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
-  transition: theme.transitions.create('width', {
+  transition: theme.transitions.create("width", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.enteringScreen,
   }),
-  overflowX: 'hidden',
+  overflowX: "hidden",
 });
 
 const closedMixin = (theme: Theme): CSSObject => ({
-  transition: theme.transitions.create('width', {
+  transition: theme.transitions.create("width", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  overflowX: 'hidden',
+  overflowX: "hidden",
   width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up('sm')]: {
+  [theme.breakpoints.up("sm")]: {
     width: `calc(${theme.spacing(8)} + 1px)`,
   },
 });
 
-const DrawerHeader = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-end',
+const DrawerHeader = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "flex-end",
   padding: theme.spacing(0, 1),
   ...theme.mixins.toolbar,
 }));
@@ -66,10 +67,10 @@ interface AppBarProps extends MuiAppBarProps {
 }
 
 const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
+  shouldForwardProp: (prop) => prop !== "open",
 })<AppBarProps>(({ theme }) => ({
   zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(['width', 'margin'], {
+  transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
@@ -79,7 +80,7 @@ const AppBar = styled(MuiAppBar, {
       style: {
         marginLeft: drawerWidth,
         width: `calc(100% - ${drawerWidth}px)`,
-        transition: theme.transitions.create(['width', 'margin'], {
+        transition: theme.transitions.create(["width", "margin"], {
           easing: theme.transitions.easing.sharp,
           duration: theme.transitions.duration.enteringScreen,
         }),
@@ -88,35 +89,35 @@ const AppBar = styled(MuiAppBar, {
   ],
 }));
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme }) => ({
-    width: drawerWidth,
-    flexShrink: 0,
-    whiteSpace: 'nowrap',
-    boxSizing: 'border-box',
-    variants: [
-      {
-        props: ({ open }) => open,
-        style: {
-          ...openedMixin(theme),
-          '& .MuiDrawer-paper': openedMixin(theme),
-        },
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== "open",
+})(({ theme }) => ({
+  width: drawerWidth,
+  flexShrink: 0,
+  whiteSpace: "nowrap",
+  boxSizing: "border-box",
+  variants: [
+    {
+      props: ({ open }) => open,
+      style: {
+        ...openedMixin(theme),
+        "& .MuiDrawer-paper": openedMixin(theme),
       },
-      {
-        props: ({ open }) => !open,
-        style: {
-          ...closedMixin(theme),
-          '& .MuiDrawer-paper': closedMixin(theme),
-        },
+    },
+    {
+      props: ({ open }) => !open,
+      style: {
+        ...closedMixin(theme),
+        "& .MuiDrawer-paper": closedMixin(theme),
       },
-    ],
-  }),
-);
+    },
+  ],
+}));
 
 export default function SidebarAdmin() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -126,9 +127,8 @@ export default function SidebarAdmin() {
     setOpen(false);
   };
 
- 
-  const handleNavigateToAddUser = (path:string) => {
-    navigate(path); 
+  const handleNavigateToAddUser = (path: string) => {
+    navigate(path);
   };
 
   const { unique_name } = useSelector((state: RootState) => state.user);
@@ -138,7 +138,7 @@ export default function SidebarAdmin() {
     deleteToken();
   };
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: "flex" }}>
       {/* <DrawerAppBar key={} /> */}
       <CssBaseline />
       <AppBar position="fixed" open={open}>
@@ -152,7 +152,7 @@ export default function SidebarAdmin() {
               {
                 marginRight: 5,
               },
-              open && { display: 'none' },
+              open && { display: "none" },
             ]}
           >
             <MenuIcon />
@@ -164,20 +164,37 @@ export default function SidebarAdmin() {
       </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
-          <div className='flex items-center justify-center  w-full' >
-            <h1 className='text-xl font-bold'>{controlrole?.aud.toLocaleUpperCase()}</h1>
+          <div className="flex flex-col py-3 justify-start w-full">
+            <div className="text-lg  flex">
+              {/* <p className='font-semibold'>Role : </p>  <span className='pl-2'>{ departmant.length > 11 ? departmant.slice(0,12) + ".." : departmant} </span> */}
+              <p className="font-semibold">Role : </p>{" "}
+              <span className="pl-2">{controlrole?.departmant} </span>
+            </div>
+            <div
+              style={{ display: !open ? "none" : "flex" }}
+              className="text-lg flex"
+            >
+              <p className="font-semibold">Type : </p>{" "}
+              <span className="pl-2">
+                {(controlrole?.aud ?? "").charAt(0).toUpperCase() +
+                  (controlrole?.aud ?? "").slice(1)}{" "}
+              </span>
+            </div>
           </div>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            {theme.direction === "rtl" ? (
+              <ChevronRightIcon />
+            ) : (
+              <ChevronLeftIcon />
+            )}
           </IconButton>
         </DrawerHeader>
-        <Divider />        
+        <Divider />
         <List>
-          
           {/* Yeni AddUser menü öğesi */}
-          <ListItem disablePadding sx={{ display: 'block' }}>
+          <ListItem disablePadding sx={{ display: "block" }}>
             <ListItemButton
-              onClick={() => handleNavigateToAddUser('/admin')} // onClick ile yönlendirme fonksiyonunu çağırıyoruz
+              onClick={() => handleNavigateToAddUser("/admin")} // onClick ile yönlendirme fonksiyonunu çağırıyoruz
               sx={[
                 {
                   minHeight: 48,
@@ -185,25 +202,25 @@ export default function SidebarAdmin() {
                 },
                 open
                   ? {
-                      justifyContent: 'initial',
+                      justifyContent: "initial",
                     }
                   : {
-                      justifyContent: 'center',
+                      justifyContent: "center",
                     },
               ]}
-            > 
+            >
               <ListItemIcon
                 sx={[
                   {
                     minWidth: 0,
-                    justifyContent: 'center',
+                    justifyContent: "center",
                   },
                   open
                     ? {
                         mr: 3,
                       }
                     : {
-                        mr: 'auto',
+                        mr: "auto",
                       },
                 ]}
               >
@@ -223,9 +240,9 @@ export default function SidebarAdmin() {
               />
             </ListItemButton>
           </ListItem>
-          <ListItem disablePadding sx={{ display: 'block' }}>
+          <ListItem disablePadding sx={{ display: "block" }}>
             <ListItemButton
-              onClick={()=>handleNavigateToAddUser('/admin/usertransection')}
+              onClick={() => handleNavigateToAddUser("/admin/usertransections")}
               sx={[
                 {
                   minHeight: 48,
@@ -233,10 +250,10 @@ export default function SidebarAdmin() {
                 },
                 open
                   ? {
-                      justifyContent: 'initial',
+                      justifyContent: "initial",
                     }
                   : {
-                      justifyContent: 'center',
+                      justifyContent: "center",
                     },
               ]}
             >
@@ -244,21 +261,21 @@ export default function SidebarAdmin() {
                 sx={[
                   {
                     minWidth: 0,
-                    justifyContent: 'center',
+                    justifyContent: "center",
                   },
                   open
                     ? {
                         mr: 3,
                       }
                     : {
-                        mr: 'auto',
+                        mr: "auto",
                       },
                 ]}
               >
-                <ManageAccountsIcon /> 
+                <ManageAccountsIcon />
               </ListItemIcon>
               <ListItemText
-                primary="User Transections" 
+                primary="User Transections"
                 sx={[
                   open
                     ? {
@@ -271,9 +288,11 @@ export default function SidebarAdmin() {
               />
             </ListItemButton>
           </ListItem>
-          <ListItem disablePadding sx={{ display: 'block' }}>
+          <ListItem disablePadding sx={{ display: "block" }}>
             <ListItemButton
-              onClick={()=>handleNavigateToAddUser('/admin/email')}
+              onClick={() =>
+                handleNavigateToAddUser("/admin/admintransections")
+              }
               sx={[
                 {
                   minHeight: 48,
@@ -281,10 +300,10 @@ export default function SidebarAdmin() {
                 },
                 open
                   ? {
-                      justifyContent: 'initial',
+                      justifyContent: "initial",
                     }
                   : {
-                      justifyContent: 'center',
+                      justifyContent: "center",
                     },
               ]}
             >
@@ -292,21 +311,21 @@ export default function SidebarAdmin() {
                 sx={[
                   {
                     minWidth: 0,
-                    justifyContent: 'center',
+                    justifyContent: "center",
                   },
                   open
                     ? {
                         mr: 3,
                       }
                     : {
-                        mr: 'auto',
+                        mr: "auto",
                       },
                 ]}
               >
-                <EmailIcon /> 
+                <AdminPanelSettingsIcon />
               </ListItemIcon>
               <ListItemText
-                primary="E-mail" 
+                primary="Admin Transections"
                 sx={[
                   open
                     ? {
@@ -319,9 +338,9 @@ export default function SidebarAdmin() {
               />
             </ListItemButton>
           </ListItem>
-          <ListItem disablePadding sx={{ display: 'block' }}>
+          <ListItem disablePadding sx={{ display: "block" }}>
             <ListItemButton
-              onClick={handleLogout} 
+              onClick={() => handleNavigateToAddUser("/admin/Departments")}
               sx={[
                 {
                   minHeight: 48,
@@ -329,10 +348,10 @@ export default function SidebarAdmin() {
                 },
                 open
                   ? {
-                      justifyContent: 'initial',
+                      justifyContent: "initial",
                     }
                   : {
-                      justifyContent: 'center',
+                      justifyContent: "center",
                     },
               ]}
             >
@@ -340,21 +359,21 @@ export default function SidebarAdmin() {
                 sx={[
                   {
                     minWidth: 0,
-                    justifyContent: 'center',
+                    justifyContent: "center",
                   },
                   open
                     ? {
                         mr: 3,
                       }
                     : {
-                        mr: 'auto',
+                        mr: "auto",
                       },
                 ]}
               >
-                <LogoutIcon /> 
+                <ClassIcon />
               </ListItemIcon>
               <ListItemText
-                primary="Logout" 
+                primary="Departments"
                 sx={[
                   open
                     ? {
@@ -367,7 +386,54 @@ export default function SidebarAdmin() {
               />
             </ListItemButton>
           </ListItem>
-            
+          <ListItem disablePadding sx={{ display: "block" }}>
+            <ListItemButton
+              onClick={handleLogout}
+              sx={[
+                {
+                  minHeight: 48,
+                  px: 2.5,
+                },
+                open
+                  ? {
+                      justifyContent: "initial",
+                    }
+                  : {
+                      justifyContent: "center",
+                    },
+              ]}
+            >
+              <ListItemIcon
+                sx={[
+                  {
+                    minWidth: 0,
+                    justifyContent: "center",
+                  },
+                  open
+                    ? {
+                        mr: 3,
+                      }
+                    : {
+                        mr: "auto",
+                      },
+                ]}
+              >
+                <LogoutIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="Logout"
+                sx={[
+                  open
+                    ? {
+                        opacity: 1,
+                      }
+                    : {
+                        opacity: 0,
+                      },
+                ]}
+              />
+            </ListItemButton>
+          </ListItem>
         </List>
       </Drawer>
     </Box>

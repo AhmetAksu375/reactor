@@ -34,8 +34,8 @@ const AdminLogin = () => {
             id: decoded.nameid,
             nbf: decoded.nbf,
             unique_name: decoded.unique_name,
-            departmant: null,
-            departmantId: null
+            departmant: decoded.departmant,
+            departmantId: decoded.departmantId,
           }));
         } else {
           console.error('Decode edilen token null döndü');
@@ -50,7 +50,7 @@ const AdminLogin = () => {
 
 
   return (
-    <div className="flex flex-col items-center h-screen">
+    <div className="flex flex-col items-center h-screen w-fit md:w-full  ">
       <h1 className="text-2xl mb-4 ">Login Admin</h1>
       <div className="flex flex-col gap-4 w-[400px]">
         <input
