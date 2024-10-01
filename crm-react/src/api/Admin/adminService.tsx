@@ -17,6 +17,7 @@ interface RegisterData extends Admin {
 
 interface CreateDepartmant {
   name: string;
+  isManager : boolean;
 }
 
 interface PutDepartmant {
@@ -73,6 +74,11 @@ interface deleteWork {
   id: number;
 }
 
+interface StatusOption {
+  id: number;
+  name: string;
+}
+
 export const loginAdmin = async (data: Admin) => {
   try {
     const response = await apiClient.post('/api/login/admin', data);
@@ -126,7 +132,7 @@ export const putDepartment = async (data: PutDepartmant) => {
     const response = await apiClient.put(`/api/departmant/${data.id}`, data);
     return response.data;
   } catch (error) {
-    toast.error('Department update failed');
+    // toast.error('Department update failed');
     throw new Error(`Department update failed: ${error}`);
   }
 }
@@ -256,3 +262,14 @@ export const deleteWork = async (data: deleteWork) => {
     throw new Error(`Work delete failed: ${error}`);
   }
 }
+
+export const statusWork = async (id: number): Promise<StatusOption[]> => {
+  try {
+    const response = await apiClient.get(`/api/Status/${id}`);
+    const statusOption: StatusOption = response.data;
+    return [statusOption]; // Tek bir nesneyi diziye dönüştürüyoruz
+  } catch (error) {
+    toast.error('Work status add failed', { position: "bottom-right", autoClose: 500 });
+    throw new Error(`Work status add failed: ${error}`);
+  }
+};

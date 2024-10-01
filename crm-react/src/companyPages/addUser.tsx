@@ -4,6 +4,8 @@ import { createSubUser } from "@/api/Company/companyService";
 import { getDepartmant } from "@/api/Common/commonServices";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -11,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { toast } from "react-toastify";
 
 interface Department {
   id: number;
@@ -26,7 +29,10 @@ export default function AddUser() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [departments, setDepartments] = useState<Department[]>([]);
-  const [selectedDepartment, setSelectedDepartment] = useState<null | string>(null);
+  const [selectedDepartment, setSelectedDepartment] = useState<null | string>(
+    null
+  );
+  const [isDepartmantManager, setIsDepartmantManager] = useState<boolean>(true);
 
   // Fetch departments when the component mounts
   useEffect(() => {
@@ -43,20 +49,38 @@ export default function AddUser() {
   };
 
   const handleLogin = async () => {
+    const departmantId = Number(selectedDepartment); // Convert selected department ID to number if needed
     if (!selectedDepartment) {
       alert("Please select a department");
       return;
     }
-    const departmantId = Number(selectedDepartment); // Convert selected department ID to number if needed
-    await createSubUser({ name, email, password, departmantId });
+    try {
+      await createSubUser({ name, email, password, departmantId, isDepartmantManager });
+      toast.success("Employee created successfully", {
+        position: "bottom-right",
+        autoClose: 500,
+      });
+    } catch (error) {}
   };
 
   return (
     <div className="space-y-2 w-9/12 md:w-4/12 lg:w-4/12">
       {/* şirket id : {company} */}
-      <Input type="text" placeholder="Username" onChange={(e) => setUsername(e.target.value)} />
-      <Input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
-      <Input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
+      <Input
+        type="text"
+        placeholder="Username"
+        onChange={(e) => setUsername(e.target.value)}
+      />
+      <Input
+        type="email"
+        placeholder="Email"
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <Input
+        type="password"
+        placeholder="Password"
+        onChange={(e) => setPassword(e.target.value)}
+      />
 
       <Select onValueChange={(value) => setSelectedDepartment(value)}>
         <SelectTrigger>
@@ -70,8 +94,19 @@ export default function AddUser() {
           ))}
         </SelectContent>
       </Select>
-
-      <Button onClick={handleLogin} type="submit">Create Employee</Button>
+      <div className="flex items-center justify-between w-full">
+        <div className="flex  flex-auto items-center space-x-1">
+          <Checkbox
+            checked={isDepartmantManager}
+            onCheckedChange={() => setIsDepartmantManager(!isDepartmantManager)} // Tıklanınca değer tersine döner
+            id="god-mod-checkbox"
+          />
+          <Label htmlFor="god-mod-checkbox">GOD MOD</Label>
+        </div>
+        <Button onClick={handleLogin} type="submit">
+          Create Employee
+        </Button>
+      </div>
     </div>
   );
 }

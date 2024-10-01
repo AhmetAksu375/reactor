@@ -12,6 +12,7 @@ export interface DecodedToken {
   unique_name: string;
   departmant: string;
   departmantId: string;
+  isDepartmantManager: string;
 }
 
 export const decodeToken = (token: string): DecodedToken | null => {

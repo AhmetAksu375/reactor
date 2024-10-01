@@ -12,7 +12,7 @@ import {
   VisibilityState,
   flexRender,
 } from "@tanstack/react-table";
-
+import { Label } from "@/components/ui/label";
 import {
   CaretSortIcon,
   ChevronDownIcon,
@@ -68,7 +68,8 @@ const Departments: React.FC = () => {
   const [deptName, setDeptName] = useState<string>("");
 
   // Delete confirmation dialog state
-  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState<boolean>(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] =
+    useState<boolean>(false);
   const [deptToDelete, setDeptToDelete] = useState<number | null>(null);
 
   // Table state
@@ -108,7 +109,9 @@ const Departments: React.FC = () => {
             table.getIsAllPageRowsSelected() ||
             (table.getIsSomePageRowsSelected() ? "indeterminate" : false)
           }
-          onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(value)}
+          onCheckedChange={(value: boolean) =>
+            table.toggleAllPageRowsSelected(value)
+          }
           aria-label="Select all"
         />
       ),
@@ -141,7 +144,9 @@ const Departments: React.FC = () => {
           <CaretSortIcon className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ getValue }) => <div className="capitalize">{getValue<string>()}</div>,
+      cell: ({ getValue }) => (
+        <div className="capitalize">{getValue<string>()}</div>
+      ),
       enableSorting: true,
     },
     {
@@ -167,7 +172,10 @@ const Departments: React.FC = () => {
               <DropdownMenuItem onClick={() => openEditPopup(dept)}>
                 Edit
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleDeleteClick} className="text-red-600 font-bold">
+              <DropdownMenuItem
+                onClick={handleDeleteClick}
+                className="text-red-600 font-bold"
+              >
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -216,6 +224,7 @@ const Departments: React.FC = () => {
 
     try {
       await removeDepartment({ id: deptToDelete });
+      debugger;
       toast.success("Department deleted.");
       setIsDeleteConfirmOpen(false);
       setDeptToDelete(null);
@@ -234,8 +243,12 @@ const Departments: React.FC = () => {
       toast.error("Department name cannot be empty.");
       return;
     }
-    const payload: { name: string } = { name: deptName.trim() };
+    // const payload: { name: string } = { name: deptName.trim() };
     try {
+      const payload: { name: string; isManager: boolean } = {
+        name: deptName.trim(),
+        isManager: isManager,
+      }; // Adjusted payload
       await createDepartment(payload);
       toast.success("Department added.");
       setIsAddOpen(false);
@@ -253,7 +266,11 @@ const Departments: React.FC = () => {
       toast.error("Department name cannot be empty.");
       return;
     }
-    const payload: { id: number; name: string } = { id: currentDept.id, name: deptName.trim() };
+    const payload: { id: number; name: string; isManager: boolean } = {
+      id: currentDept.id,
+      name: deptName.trim(),
+      isManager: isManager,
+    };
     try {
       await putDepartment(payload);
       toast.success("Department updated.");
@@ -270,6 +287,7 @@ const Departments: React.FC = () => {
     setDeptName(e.target.value);
   };
 
+  const [isManager, setIsManager] = useState<boolean>(true);
   return (
     <div className="w-full">
       {/* Header with Add Button and Column Filters */}
@@ -277,7 +295,9 @@ const Departments: React.FC = () => {
         <Input
           placeholder="Filter departments..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(e) => table.getColumn("name")?.setFilterValue(e.target.value)}
+          onChange={(e) =>
+            table.getColumn("name")?.setFilterValue(e.target.value)
+          }
           className="max-w-sm"
         />
         <Button variant="default" className="ml-auto" onClick={openAddPopup}>
@@ -290,15 +310,18 @@ const Departments: React.FC = () => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            {table.getAllColumns().filter(col => col.getCanHide()).map(col => (
-              <DropdownMenuCheckboxItem
-                key={col.id}
-                checked={col.getIsVisible()}
-                onCheckedChange={(value) => col.toggleVisibility(value)}
-              >
-                {col.id.charAt(0).toUpperCase() + col.id.slice(1)}
-              </DropdownMenuCheckboxItem>
-            ))}
+            {table
+              .getAllColumns()
+              .filter((col) => col.getCanHide())
+              .map((col) => (
+                <DropdownMenuCheckboxItem
+                  key={col.id}
+                  checked={col.getIsVisible()}
+                  onCheckedChange={(value) => col.toggleVisibility(value)}
+                >
+                  {col.id.charAt(0).toUpperCase() + col.id.slice(1)}
+                </DropdownMenuCheckboxItem>
+              ))}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -307,11 +330,16 @@ const Departments: React.FC = () => {
       <div className="rounded-md border">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map(headerGroup => (
+            {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map(header => (
+                {headerGroup.headers.map((header) => (
                   <TableHead key={header.id}>
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -326,16 +354,25 @@ const Departments: React.FC = () => {
               </TableRow>
             ) : error ? (
               <TableRow>
-                <TableCell colSpan={columns.length} className="text-center text-red-500">
+                <TableCell
+                  colSpan={columns.length}
+                  className="text-center text-red-500"
+                >
                   {error}
                 </TableCell>
               </TableRow>
             ) : table.getRowModel().rows.length > 0 ? (
-              table.getRowModel().rows.map(row => (
-                <TableRow key={row.id} data-state={row.getIsSelected() ? "selected" : ""}>
-                  {row.getVisibleCells().map(cell => (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() ? "selected" : ""}
+                >
+                  {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
@@ -354,7 +391,8 @@ const Departments: React.FC = () => {
       {/* Pagination */}
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          {Object.keys(selection).filter(key => selection[key]).length} of {departments.length} row(s) selected.
+          {Object.keys(selection).filter((key) => selection[key]).length} of{" "}
+          {departments.length} row(s) selected.
         </div>
         <div className="space-x-2">
           <Button
@@ -390,13 +428,31 @@ const Departments: React.FC = () => {
                 className="mb-4"
                 required
               />
-              <div className="flex justify-end space-x-2">
-                <Button type="button" variant="secondary" onClick={() => setIsAddOpen(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit" variant="default">
-                  Add
-                </Button>
+              <div className="flex justify-between space-x-2">
+                <div>
+                  <div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        checked={isManager}
+                        onCheckedChange={() => setIsManager(!isManager)} // Tıklanınca değer tersine döner
+                        id="god-mod-checkbox"
+                      />
+                      <Label htmlFor="god-mod-checkbox">GOD MOD</Label>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-x-2">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => setIsAddOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button type="submit" variant="default">
+                    Add
+                  </Button>
+                </div>
               </div>
             </form>
             <Dialog.Close asChild>
@@ -413,7 +469,9 @@ const Departments: React.FC = () => {
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
           <Dialog.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded shadow-lg w-full max-w-md">
-            <Dialog.Title className="text-lg mb-4">Edit Department</Dialog.Title>
+            <Dialog.Title className="text-lg mb-4">
+              Edit Department
+            </Dialog.Title>
             <form onSubmit={submitEdit}>
               <Input
                 placeholder="Department Name"
@@ -422,13 +480,30 @@ const Departments: React.FC = () => {
                 className="mb-4"
                 required
               />
-              <div className="flex justify-end space-x-2">
-                <Button type="button" variant="secondary" onClick={() => setIsEditOpen(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit" variant="default">
-                  Save
-                </Button>
+              <div className="flex justify-between items-center">
+                <div className="justify-center items-center flex space-x-2">
+                  <Checkbox
+                    checked={isManager}
+                    onCheckedChange={() => setIsManager(!isManager)} // Tıklanınca değer tersine döner
+                    id="god-mod-checkbox"
+                  />
+                  <Label htmlFor="god-mod-checkbox">GOD MOD : {isManager ? "TRUE" : "FALSE"}</Label>
+                </div>
+
+                <div className="flex justify-end space-x-2">
+                  <div className="space-x-2">
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={() => setIsEditOpen(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button type="submit" variant="default">
+                      Save
+                    </Button>
+                  </div>
+                </div>
               </div>
             </form>
             <Dialog.Close asChild>
@@ -441,17 +516,28 @@ const Departments: React.FC = () => {
       </Dialog.Root>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog.Root open={isDeleteConfirmOpen} onOpenChange={setIsDeleteConfirmOpen}>
+      <Dialog.Root
+        open={isDeleteConfirmOpen}
+        onOpenChange={setIsDeleteConfirmOpen}
+      >
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
           <Dialog.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded shadow-lg w-full max-w-sm">
             <Dialog.Title className="text-lg mb-4">Confirm Delete</Dialog.Title>
             <p>Are you sure you want to delete this department?</p>
             <div className="flex justify-end space-x-2 mt-4">
-              <Button type="button" variant="secondary" onClick={() => setIsDeleteConfirmOpen(false)}>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => setIsDeleteConfirmOpen(false)}
+              >
                 No
               </Button>
-              <Button type="button" variant="destructive" onClick={handleDelete}>
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={handleDelete}
+              >
                 Yes
               </Button>
             </div>

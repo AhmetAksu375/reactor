@@ -12,6 +12,7 @@ interface UserState {
   unique_name: string | null;
   departmant:string | null;
   departmantId:string | null;
+  isDepartmantManager:string | null;
 }
 
 const initialState: UserState = {
@@ -24,7 +25,9 @@ const initialState: UserState = {
   nbf: null,
   unique_name: null,
   departmant:null,
-  departmantId:null
+  departmantId:null,
+  isDepartmantManager:null,
+
 };
 
 const userSlice = createSlice({
@@ -42,6 +45,7 @@ const userSlice = createSlice({
       state.unique_name = action.payload.unique_name;
       state.departmant = action.payload.departmant;
       state.departmantId = action.payload.departmantId;
+      state.isDepartmantManager = action.payload.isDepartmantManager;
     },
     clearUser: (state) => {
       state.aud = null;
@@ -54,6 +58,7 @@ const userSlice = createSlice({
       state.unique_name = null;
       state.departmant = null;
       state.departmantId = null;
+      state.isDepartmantManager = null;
     },
   },
 });

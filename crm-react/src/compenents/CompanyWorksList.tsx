@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { getWorks } from "@/api/Admin/adminService"; // Ensure API functions are correctly implemented
+import { postApprove } from "@/api/Company/companyService"; // Ensure API functions are correctly implemented
 import {
   ColumnDef,
   flexRender,
@@ -61,6 +62,9 @@ interface Work {
   companyId: number;
   date_Start: string;
   date_Finish: string;
+  customerApproved: boolean;
+  customerComment: string;
+  approvalDate: Date;
 }
 
 export default function CompanyWorksList() {
@@ -90,7 +94,9 @@ export default function CompanyWorksList() {
     { accessorKey: "departmant.name", header: "Department" },
     { accessorKey: "hours", header: "Hours" },
     { accessorKey: "price", header: "Price" },
-    { accessorKey: "status", header: "Status",
+    {
+      accessorKey: "status",
+      header: "Status",
       cell: ({ getValue }) => {
         const status = getValue<string>();
         let colorClass = "";
@@ -106,7 +112,13 @@ export default function CompanyWorksList() {
             colorClass = "text-blue-600 font-bold"; // Customize as needed
             break;
           case "Pending":
-            colorClass = "text-yellow-600 font-bold"; // Customize as needed
+            colorClass = "text-orange-400  font-bold"; // Customize as needed
+            break;
+          case "On Hold":
+            colorClass = " text-indigo-500 font-bold"; // Customize as needed
+            break;
+          case "On Approve":
+            colorClass = " text-yellow-400 font-bold"; // Customize as needed
             break;
           default:
             colorClass = "text-gray-600";
@@ -114,7 +126,7 @@ export default function CompanyWorksList() {
 
         return <span className={colorClass}>{status}</span>;
       },
-     },
+    },
     { accessorKey: "workerCount", header: "Worker Count" },
     {
       accessorKey: "stagingId",
@@ -221,6 +233,33 @@ export default function CompanyWorksList() {
     setSelectedWork(null);
   };
 
+  const handleApprove = async (selection: number) => {
+    const approveObject = {
+      customerApproved: selection === 1 ? true : false,
+      customerComment: selection === 1 ? "Approved" : "Rejected",
+      approvalDate: new Date(),
+    };
+
+    if (selectedWork) {
+      try {
+        console.log(approveObject);
+        await postApprove(selectedWork.id, approveObject);
+
+        const updatedWorks = await getWorks();
+        setWorks(updatedWorks);
+
+        setSelectedWork({
+          ...selectedWork,
+          ...approveObject,
+        });
+
+        handleCloseModal();
+      } catch (error) {
+        console.error("Error approving work:", error);
+      }
+    }
+  };
+
   const generatePageNumbers = () => {
     const pageCount = table.getPageCount();
     const pages = [];
@@ -229,9 +268,13 @@ export default function CompanyWorksList() {
       pages.push(
         <Button
           key={i}
-          variant={i === table.getState().pagination.pageIndex ? "default" : "ghost"}
+          variant={
+            i === table.getState().pagination.pageIndex ? "default" : "ghost"
+          }
           className={`h-8 px-3 ${
-            i === table.getState().pagination.pageIndex ? "bg-blue-500 text-white" : ""
+            i === table.getState().pagination.pageIndex
+              ? "bg-blue-500 text-white"
+              : ""
           }`}
           onClick={() => table.setPageIndex(i)}
         >
@@ -315,7 +358,10 @@ export default function CompanyWorksList() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   No results.
                 </TableCell>
               </TableRow>
@@ -343,7 +389,8 @@ export default function CompanyWorksList() {
           </Button>
         </div>
         <div>
-          Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+          Page {table.getState().pagination.pageIndex + 1} of{" "}
+          {table.getPageCount()}
         </div>
       </div>
 
@@ -352,26 +399,87 @@ export default function CompanyWorksList() {
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
           <DialogContent className="w-full max-w-2xl max-h-screen overflow-y-auto sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Work Details</DialogTitle>
+              <DialogTitle className="mb-2 font-extrabold text-2xl">
+                Work Details
+              </DialogTitle>
               <DialogDescription>
                 <div className="space-y-2">
-                  <p><strong>Title:</strong> {selectedWork.title}</p>
-                  <p><strong>Status:</strong> {selectedWork.status}</p>
-                  <p><strong>Stage:</strong> {stagingOptions.find(s => s.id === selectedWork.stagingId)?.name}</p>
-                  <p><strong>Hours:</strong> {selectedWork.hours}</p>
-                  <p><strong>Worker Count:</strong> {selectedWork.workerCount}</p>
-                  <p><strong>Price:</strong> {selectedWork.price}</p>
-                  <p><strong>Start Date:</strong> {selectedWork.date_Start.slice(0, 10)}</p>
-                  <p><strong>Finish Date:</strong> {selectedWork.date_Finish.slice(0, 10)}</p>
-                  <p><strong>Description:</strong> {selectedWork.description}</p>
-                  <p><strong>Department:</strong> {selectedWork.departmant?.name}</p>
-                  <p><strong>Company:</strong> {selectedWork.company?.name}</p>
+                  <p>
+                    <strong>Title:</strong> {selectedWork.title}
+                  </p>
+                  <p>
+                    <strong>Status:</strong>
+                    <span className={selectedWork.status}> {selectedWork.status}</span>
+                  </p>
+                  <p>
+                    <strong>Stage:</strong>{" "}
+                    {
+                      stagingOptions.find(
+                        (s) => s.id === selectedWork.stagingId
+                      )?.name
+                    }
+                  </p>
+                  <p>
+                    <strong>Hours:</strong> {selectedWork.hours}
+                  </p>
+                  <p>
+                    <strong>Worker Count:</strong> {selectedWork.workerCount}
+                  </p>
+                  <p>
+                    <strong>Price:</strong> {selectedWork.price}
+                  </p>
+                  <p>
+                    <strong>Start Date:</strong>{" "}
+                    {selectedWork.date_Start.slice(0, 10)}
+                  </p>
+                  <p>
+                    <strong>Finish Date:</strong>{" "}
+                    {selectedWork.date_Finish.slice(0, 10)}
+                  </p>
+                  <p>
+                    <strong>Description:</strong> {selectedWork.description}
+                  </p>
+                  <p>
+                    <strong>Department:</strong> {selectedWork.departmant?.name}
+                  </p>
+                  <p>
+                    <strong>Company:</strong> {selectedWork.company?.name}
+                  </p>
+                  {selectedWork.customerComment !== null && (
+                    <p>
+                      <strong>Approve Status: </strong>
+                      <span
+                        className={
+                          selectedWork.customerComment === "Approved"
+                            ? " font-extrabold text-green-600"
+                            : "font-extrabold text-red-600"
+                        }
+                      >
+                        {selectedWork.customerComment}
+                      </span>
+                    </p>
+                  )}
                 </div>
               </DialogDescription>
             </DialogHeader>
-            <Button className="mt-4" onClick={handleCloseModal}>
-              Close
-            </Button>
+            {selectedWork.customerComment === null &&
+              selectedWork.status === "On Approve" && (
+                <div className="flex space-x-2">
+                  <Button
+                    className="w-full bg-green-500"
+                    onClick={async () => await handleApprove(1)}
+                  >
+                    Approve
+                  </Button>
+                  <Button
+                    className="w-full bg-red-500"
+                    onClick={async () => await handleApprove(2)}
+                  >
+                    Reject
+                  </Button>
+                </div>
+              )}
+            <Button onClick={handleCloseModal}>Close</Button>
           </DialogContent>
         </Dialog>
       )}

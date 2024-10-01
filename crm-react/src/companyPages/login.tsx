@@ -18,6 +18,7 @@ const LoginCompany = () => {
       const token = localStorage.getItem('token');
       if (token) {
         const decoded = decodeToken(token);
+        debugger;
         console.log(decoded);
         debugger;
         if (decoded) {
@@ -32,6 +33,7 @@ const LoginCompany = () => {
             unique_name: decoded.unique_name,
             departmant: decoded.departmant,
             departmantId: decoded.departmantId,
+            isDepartmantManager: decoded.isDepartmantManager,
 
           }));
         } else {
@@ -63,6 +65,7 @@ const LoginCompany = () => {
             unique_name: decoded.unique_name,
             departmant: decoded.departmant,
             departmantId: decoded.departmantId,
+            isDepartmantManager: decoded.isDepartmantManager,
           }));
         } else {
           console.error('Decode edilen token null döndü');

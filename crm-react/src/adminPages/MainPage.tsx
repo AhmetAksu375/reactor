@@ -1,5 +1,12 @@
+// mainpage.tsx
 import { useState, useEffect } from "react";
-import { getWorks, putWork, declineEmail,deleteWork } from "@/api/Admin/adminService";
+import {
+  getWorks,
+  putWork,
+  declineEmail,
+  deleteWork,
+  statusWork, // Durum seçeneklerini almak için import edildi
+} from "@/api/Admin/adminService";
 import {
   ColumnDef,
   flexRender,
@@ -45,6 +52,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "react-toastify";
 
+// Staging Options (sabit kalabilir)
 const stagingOptions = [
   { id: 0, name: "Planning" },
   { id: 1, name: "Design" },
@@ -53,13 +61,17 @@ const stagingOptions = [
   { id: 4, name: "Deployment" },
 ];
 
-const statusOptions = [
+// Varsayılan durum seçenekleri (Opsiyonel)
+const statusOptionsAll = [
   { value: "Pending", label: "Pending" },
   { value: "In Progress", label: "In Progress" },
   { value: "Completed", label: "Completed" },
   { value: "On Hold", label: "On Hold" },
 ];
-
+interface StatusOption {
+  id: number;
+  name: string;
+}
 interface Work {
   company: { name: string };
   departmant: { name: string };
@@ -78,6 +90,9 @@ interface Work {
   companyId: number;
   date_Start: string;
   date_Finish: string;
+  customerApproved: boolean;
+  customerComment: string;
+  approvalDate: Date;
 }
 
 export default function MainPage() {
@@ -102,6 +117,12 @@ export default function MainPage() {
   // Yeni eklenen durumlar
   const [isDeclineModalOpen, setIsDeclineModalOpen] = useState(false);
   const [declineMessage, setDeclineMessage] = useState("");
+
+  // Durum seçeneklerini dinamik olarak almak için state ekledik
+  const [availableStatusOptions, setAvailableStatusOptions] = useState<
+    { value: string; label: string }[]
+  >([]);
+  const [isStatusLoading, setIsStatusLoading] = useState(false); // Yükleniyor göstergesi için
 
   useEffect(() => {
     const fetchWorks = async () => {
@@ -141,7 +162,13 @@ export default function MainPage() {
             colorClass = "text-blue-600 font-bold"; // Customize as needed
             break;
           case "Pending":
-            colorClass = "text-yellow-600 font-bold"; // Customize as needed
+            colorClass = "text-orange-400 font-bold"; // Customize as needed
+            break;
+          case "On Hold":
+            colorClass = "text-indigo-500 font-bold"; // Customize as needed
+            break;
+          case "On Approve":
+            colorClass = "text-yellow-400 font-bold"; // Customize as needed
             break;
           default:
             colorClass = "text-gray-600";
@@ -194,40 +221,41 @@ export default function MainPage() {
           </div>
         );
       },
-        },
-        {
+    },
+    {
+      header: "Actions",
       id: "actions",
       cell: ({ row }) => {
         const work = row.original;
+    
         async function handleCompleted(work: Work) {
-          if (work.status === "Completed") return;
-
           try {
-        const updatedWork = {
-          ...work,
-          status: "Completed",
-        };
-
-        await toast.promise(
-          putWork(updatedWork),
-          {
-            pending: "Marking work as completed...",
-            success: "Work marked as completed!",
-            error: "Failed to mark work as completed.",
-          },
-          {
-            position: "bottom-right",
-            autoClose: 500,
-          }
-        );
-
-        const worksData = await getWorks();
-        const sortedWorks = worksData.sort((a: Work, b: Work) => b.id - a.id);
-        setWorks(sortedWorks);
+            const updatedWork = {
+              ...work,
+              status: "Completed",
+            };
+    
+            await toast.promise(
+              putWork(updatedWork),
+              {
+                pending: "Marking work as completed...",
+                success: "Work marked as completed!",
+                error: "Failed to mark work as completed.",
+              },
+              {
+                position: "bottom-right",
+                autoClose: 500,
+              }
+            );
+    
+            const worksData = await getWorks();
+            const sortedWorks = worksData.sort((a: Work, b: Work) => b.id - a.id);
+            setWorks(sortedWorks);
           } catch (error) {
-        console.error("Error marking work as completed:", error);
+            console.error("Error marking work as completed:", error);
           }
         }
+    
         async function handleDeleteWork(work: Work) {
           try {
             await deleteWork({ id: work.id });
@@ -239,44 +267,64 @@ export default function MainPage() {
               autoClose: 500,
             });
           } catch (error) {
-          
+            console.error("Error deleting work:", error);
+            toast.error("Failed to delete work.", {
+              position: "bottom-right",
+              autoClose: 500,
+            });
           }
         }
+    
         return (
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
+            <DropdownMenuTrigger asChild disabled={work.status === "Completed"}>
+              <Button variant="ghost" className="h-8 w-8 p-0" disabled={work.status === "Completed"}>
                 <span className="sr-only">Open menu</span>
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
+    
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => handleOpenUpdateDialog(work)}>
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleCompleted(work)}
-                className="text-green-600"
-              >
-                Completed
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleDeclineClick(work)}
-                className="text-red-600"
-              >
-                Decline
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleDeleteWork(work)}
-                className="text-red-600"
-              >
-                Delete
-              </DropdownMenuItem>
+              {work.status !== "Completed" && (
+                <>
+                  <DropdownMenuItem
+                    onClick={() => handleOpenUpdateDialog(work)}
+                    disabled={work.status !== "In Progress" && work.status !== "Pending" && work.status !== "On Hold"  }
+                  >
+                    Edit
+                  </DropdownMenuItem>
+    
+                  <DropdownMenuItem
+                    onClick={() => handleCompleted(work)}
+                    className="text-green-600"
+                    disabled={work.status !== "In Progress"}
+                  >
+                    Completed
+                  </DropdownMenuItem>
+    
+                  <DropdownMenuItem
+                    onClick={() => handleDeclineClick(work)}
+                    className="text-red-600"
+                    disabled={work.status !== "Pending"}
+                  >
+                    Decline
+                  </DropdownMenuItem>
+    
+                  <DropdownMenuItem
+                    onClick={() => handleDeleteWork(work)}
+                    className="text-red-600"
+                    disabled={work.status !== "Rejected"}
+                  >
+                    Delete
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         );
       },
-    },
+    }
+    
   ];
 
   const table = useReactTable({
@@ -308,8 +356,13 @@ export default function MainPage() {
     },
   });
 
-  const handleOpenUpdateDialog = (work: Work) => {
-    const todayDate = new Date().toISOString().slice(0, 10); // Get today's date in YYYY-MM-DD format
+  const handleOpenUpdateDialog = async (work: Work) => {
+    const todayDate = new Date().toISOString().slice(0, 10); // Bugünün tarihini YYYY-MM-DD formatında al
+    if (work.status === "Completed")
+      return toast.error("Completed work cannot be edited.", {
+        position: "bottom-right",
+        autoClose: 500,
+      });
     setSelectedWork(work);
     setFormData({
       status: work.status || "",
@@ -320,12 +373,34 @@ export default function MainPage() {
       date_Start: work.date_Start ? work.date_Start.slice(0, 10) : todayDate,
       date_Finish: work.date_Finish ? work.date_Finish.slice(0, 10) : todayDate,
     });
+
+    // Durum seçeneklerini sunucudan al
+    setIsStatusLoading(true);
+    try {
+      const statusOptionsData = await statusWork(work.id);
+      // StatusOption dizisini Select bileşeni için uygun formata dönüştür
+      const formattedStatusOptions = statusOptionsData.map(
+        (status: StatusOption) => ({
+          value: status.name, // 'name' alanını 'value' olarak kullanıyoruz
+          label: status.name, // 'name' alanını 'label' olarak kullanıyoruz
+        })
+      );
+      setAvailableStatusOptions(formattedStatusOptions);
+    } catch (error) {
+      console.error("Status seçenekleri alınırken hata oluştu:", error);
+      setAvailableStatusOptions(statusOptionsAll); // Varsayılan veya boş bir dizi kullanabilirsiniz
+      toast.error("Durum seçenekleri alınamadı.");
+    } finally {
+      setIsStatusLoading(false);
+    }
+
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedWork(null);
+    setAvailableStatusOptions([]); // Modal kapandığında durum seçeneklerini sıfırla
   };
 
   const handleFormChange = (
@@ -365,9 +440,16 @@ export default function MainPage() {
       const sortedWorks = worksData.sort((a: Work, b: Work) => b.id - a.id);
       setWorks(sortedWorks);
       handleCloseModal();
+      toast.success("Work updated successfully!", {
+        position: "bottom-right",
+        autoClose: 500,
+      });
     } catch (error) {
-      
       console.error("Error updating work:", error);
+      toast.error("Failed to update work.", {
+        position: "bottom-right",
+        autoClose: 500,
+      });
     }
   };
 
@@ -375,15 +457,14 @@ export default function MainPage() {
   const handleDeclineClick = (work: Work) => {
     setSelectedWork(work);
     if (work.status === "Declined") return;
-    setIsDeclineModalOpen(true)
-  
+    setIsDeclineModalOpen(true);
   };
 
   const declineSubmits = async () => {
     if (!selectedWork || !declineMessage) return;
 
     try {
-      // Status'u "Completed" olarak güncelle
+      // Status'u "Declined" olarak güncelle
       const updatedWork = {
         ...selectedWork,
         status: "Declined",
@@ -393,13 +474,8 @@ export default function MainPage() {
       await putWork(updatedWork);
 
       // Decline email gönder
-      // await declineEmail({
-      //   workId: selectedWork.id,
-      //   message: declineMessage,
-      // })
-
       await toast.promise(
-         declineEmail({
+        declineEmail({
           workId: selectedWork.id,
           message: declineMessage,
         }),
@@ -408,9 +484,8 @@ export default function MainPage() {
           success: "Decline email sent successfully!",
           error: "Error sending decline email",
         },
-        {position: "bottom-right",autoClose:500}
+        { position: "bottom-right", autoClose: 500 }
       );
-      ;
 
       // Works listesini güncelle
       const worksData = await getWorks();
@@ -423,10 +498,11 @@ export default function MainPage() {
       setSelectedWork(null);
     } catch (error) {
       console.error("Error declining work:", error);
+      toast.error("Failed to decline work.", {
+        position: "bottom-right",
+        autoClose: 500,
+      });
     }
-
-    setIsDeclineModalOpen(false)
-
   };
 
   const generatePageNumbers = () => {
@@ -575,24 +651,28 @@ export default function MainPage() {
               {/* Status Field */}
               <div>
                 <Label htmlFor="status">Status</Label>
-                <Select
-                  onValueChange={(value) =>
-                    setFormData((prev) => ({ ...prev, status: value }))
-                  }
-                  value={formData.status}
-                  required
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {statusOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                {isStatusLoading ? (
+                  <p>Loading statuses...</p>
+                ) : (
+                  <Select
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({ ...prev, status: value }))
+                    }
+                    value={formData.status}
+                    required
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableStatusOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
               </div>
 
               {/* Staging ID Field */}
@@ -613,10 +693,7 @@ export default function MainPage() {
                   </SelectTrigger>
                   <SelectContent>
                     {stagingOptions.map((option) => (
-                      <SelectItem
-                        key={option.id}
-                        value={option.id.toString()}
-                      >
+                      <SelectItem key={option.id} value={option.id.toString()}>
                         {option.name}
                       </SelectItem>
                     ))}

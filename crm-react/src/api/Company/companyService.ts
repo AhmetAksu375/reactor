@@ -18,7 +18,7 @@ interface createSubUser {
   email : string;
   password : string;
   departmantId : number;
-  
+  isDepartmantManager : boolean;
 }
   
 interface deleteSubUser {
@@ -44,6 +44,13 @@ interface AddWork {
   priorityId: number;
   departmantId: number;
 }
+
+interface Approve {
+  customerApproved: boolean;
+  customerComment: string;
+  approvalDate: Date;
+}
+
 
 export const companyLogin = async (data: Company) => {
   try {
@@ -154,5 +161,71 @@ export const companyWorkList = async () => {
       toast.error('Work list fetch failed');
     }
     throw new Error(`Work list fetch failed: ${error}`);
+  }
+}
+
+export const getBill = async () => {
+  try {
+    const response = await apiClient.get('/api/invoice');
+    return response.data;
+  } catch (error: any) {
+    if (error.response && error.response.status === 401) {
+      toast.error('Unauthorized: Please log in again.');
+    } else {
+      toast.error('Bill list fetch failed');
+    }
+    throw new Error(`Bill list fetch failed: ${error}`);
+  }
+}
+
+export const getBillById = async (id: number) => {
+  try {
+    const response = await apiClient.get(`/api/invoice/${id}`);
+    return response.data;
+  } catch (error: any) {
+    if (error.response && error.response.status === 401) {
+      toast.error('Unauthorized: Please log in again.');
+    } else {
+      toast.error('Bill fetch failed');
+    }
+    throw new Error(`Bill fetch failed: ${error}`);
+  }
+}
+
+export const getInvoice = async () => {
+  try {
+    const response = await apiClient.get('/api/invoice');
+    return response.data;
+  } catch (error: any) {
+    if (error.response && error.response.status === 401) {
+      toast.error('Unauthorized: Please log in again.');
+    } else {
+      toast.error('Invoice list fetch failed');
+    }
+    throw new Error(`Invoice list fetch failed: ${error}`);
+  }
+}
+
+export const getInvoiceById = async (id: number) => {
+  try {
+    const response = await apiClient.get(`/api/invoice/${id}`);
+    return response.data;
+  } catch (error: any) {
+    if (error.response && error.response.status === 401) {
+      toast.error('Unauthorized: Please log in again.');
+    } else {
+      toast.error('Invoice fetch failed');
+    }
+    throw new Error(`Invoice fetch failed: ${error}`);
+  }
+}
+
+export const postApprove = async (id:number, data: Approve) => {
+  try {
+    const response = await apiClient.post(`/api/Work/${id}/approve`, data);
+    return response.data;
+  } catch (error) {
+    toast.error('Approval failed');
+    throw new Error(`Approval failed: ${error}`);
   }
 }
